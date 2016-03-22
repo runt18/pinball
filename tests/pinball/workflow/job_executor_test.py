@@ -201,7 +201,7 @@ class ShellJobExecutorTestCase(unittest.TestCase):
         s3_key_mock.__enter__.return_value = s3_key_mock
 
         job = ShellJob(name='some_job',
-                       command="printf \"%s\"" % ('a' * 20000),
+                       command="printf \"{0!s}\"".format(('a' * 20000)),
                        emails=['some_email@pinterest.com'],
                        warn_timeout_sec=10,
                        abort_timeout_sec=20)

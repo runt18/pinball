@@ -50,7 +50,7 @@ class AnalyzerTestCase(unittest.TestCase):
         for level in range(AnalyzerTestCase._NUM_LEVELS):
             jobs_at_level = 2 ** (AnalyzerTestCase._NUM_LEVELS - level - 1)
             for job_index in range(jobs_at_level):
-                job_name = 'job_%d_%d' % (level, job_index)
+                job_name = 'job_{0:d}_{1:d}'.format(level, job_index)
                 event_name = Name(workflow='some_workflow',
                                   instance='123',
                                   job=job_name,
@@ -60,13 +60,13 @@ class AnalyzerTestCase(unittest.TestCase):
                               Name.WORKFLOW_START_INPUT + '_prime']
                     event_name.input = Name.WORKFLOW_START_INPUT
                 else:
-                    inputs = ['job_%d_%d' % (level - 1, 2 * job_index),
-                              'job_%d_%d' % (level - 1, 2 * job_index + 1)]
-                    event_name.input = 'job_%d_%d' % (level - 1, 2 * job_index)
+                    inputs = ['job_{0:d}_{1:d}'.format(level - 1, 2 * job_index),
+                              'job_{0:d}_{1:d}'.format(level - 1, 2 * job_index + 1)]
+                    event_name.input = 'job_{0:d}_{1:d}'.format(level - 1, 2 * job_index)
                 if level == AnalyzerTestCase._NUM_LEVELS - 1:
                     outputs = []
                 else:
-                    outputs = ['job_%d_%d' % (level + 1, job_index / 2)]
+                    outputs = ['job_{0:d}_{1:d}'.format(level + 1, job_index / 2)]
                 job = ShellJob(name=job_name,
                                inputs=inputs,
                                outputs=outputs,
@@ -163,7 +163,7 @@ class AnalyzerTestCase(unittest.TestCase):
 
         roots = []
         for job_index in range(0, 2 ** (AnalyzerTestCase._NUM_LEVELS - 1)):
-            roots.append('job_0_%d' % job_index)
+            roots.append('job_0_{0:d}'.format(job_index))
 
         analyzer.poison(roots)
         tokens = analyzer.get_tokens()
@@ -181,7 +181,7 @@ class AnalyzerTestCase(unittest.TestCase):
 
         roots = []
         for job_index in range(0, 2 ** (AnalyzerTestCase._NUM_LEVELS - 1), 2):
-            roots.append('job_0_%d' % job_index)
+            roots.append('job_0_{0:d}'.format(job_index))
 
         analyzer.poison(roots)
         tokens = analyzer.get_tokens()
@@ -203,7 +203,7 @@ class AnalyzerTestCase(unittest.TestCase):
 
         roots = []
         for job_index in range(0, 2 ** (AnalyzerTestCase._NUM_LEVELS - 1)):
-            roots.append('job_0_%d' % job_index)
+            roots.append('job_0_{0:d}'.format(job_index))
 
         analyzer.poison(roots)
         tokens = analyzer.get_new_event_tokens()

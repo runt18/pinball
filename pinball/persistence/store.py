@@ -288,11 +288,11 @@ class DbStore(Store):
         where_condition = ''
         conditions = []
         if name_prefix != '':
-            conditions.append('name LIKE "%s%%%%"' % name_prefix.replace('_', '\_'))
+            conditions.append('name LIKE "{0!s}%%"'.format(name_prefix.replace('_', '\_')))
         if name_infix != '':
-            conditions.append('name LIKE "%%%%%s%%%%"' % name_infix.replace('_', '\_'))
+            conditions.append('name LIKE "%%{0!s}%%"'.format(name_infix.replace('_', '\_')))
         if name_suffix != '':
-            conditions.append('name LIKE "%%%%%s"' % name_suffix.replace('_', '\_'))
+            conditions.append('name LIKE "%%{0!s}"'.format(name_suffix.replace('_', '\_')))
         if conditions:
             where_condition = 'WHERE ' + ' AND '.join(conditions)
 

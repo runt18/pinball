@@ -193,7 +193,7 @@ class UpdateTestCase(unittest.TestCase):
         input_token = Token(name='/some_path/some_token')
         request = ModifyRequest(updates=[input_token])
         client.modify.assert_called_once_with(request)
-        self.assertEqual('inserted %s\nupdated 1 token\n' % str(output_token),
+        self.assertEqual('inserted {0!s}\nupdated 1 token\n'.format(str(output_token)),
                          output)
 
     def test_update(self):
@@ -229,5 +229,5 @@ class UpdateTestCase(unittest.TestCase):
                             data='some_other_data')
         request = ModifyRequest(updates=[input_token])
         client.modify.assert_called_once_with(request)
-        self.assertEqual('updated %s\nupdated 1 token\n' % str(output_token),
+        self.assertEqual('updated {0!s}\nupdated 1 token\n'.format(str(output_token)),
                          output)

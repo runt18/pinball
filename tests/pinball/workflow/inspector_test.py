@@ -45,7 +45,7 @@ class InspectorTestCase(unittest.TestCase):
                 name.job_state = Name.WAITING_STATE
             else:
                 name.job_state = Name.RUNNABLE_STATE
-            name.job = 'some_job_%d' % job_id
+            name.job = 'some_job_{0:d}'.format(job_id)
             job_token = Token(name=name.get_job_token_name())
             request.updates.append(job_token)
         client = self._factory.get_client()
@@ -58,9 +58,9 @@ class InspectorTestCase(unittest.TestCase):
         for job_id in range(0, 2):
             for input_id in range(0, 2):
                 for event_id in range(0, 2):
-                    name.job = 'some_job_%d' % job_id
-                    name.input = 'some_input_%d' % input_id
-                    name.event = 'some_event_%d' % event_id
+                    name.job = 'some_job_{0:d}'.format(job_id)
+                    name.input = 'some_input_{0:d}'.format(input_id)
+                    name.event = 'some_event_{0:d}'.format(event_id)
                     event_token = Token(name=name.get_event_token_name())
                     request.updates.append(event_token)
         client = self._factory.get_client()

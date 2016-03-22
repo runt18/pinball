@@ -41,7 +41,7 @@ class GithubRepositoryTestCase(unittest.TestCase):
         conn.getresponse.return_value = response
         response.status = httplib.OK
         encoded_content = base64.b64encode('some_content')
-        response.read.return_value = '{"content": "%s"}' % encoded_content
+        response.read.return_value = '{{"content": "{0!s}"}}'.format(encoded_content)
 
         repository = GithubRepository()
         content = repository._get_config('/some_path')

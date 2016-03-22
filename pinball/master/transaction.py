@@ -73,7 +73,7 @@ class Transaction(object):
             if not token.version:
                 raise TokenMasterException(
                     ErrorCode.INPUT_ERROR,
-                    'token %s does not have version set' % token.name)
+                    'token {0!s} does not have version set'.format(token.name))
 
     def _set_trie(self, trie, blessed_version, store):
         self._trie = trie
@@ -125,12 +125,11 @@ class ArchiveTransaction(Transaction):
             existing_token = self._trie.get(token.name)
             if not existing_token:
                 raise TokenMasterException(ErrorCode.NOT_FOUND,
-                                           'token %s not found' % token.name)
+                                           'token {0!s} not found'.format(token.name))
             if token.version != existing_token.version:
                 raise TokenMasterException(
                     ErrorCode.VERSION_CONFLICT,
-                    'token %s with different version %d found' %
-                    (existing_token.name, existing_token.version))
+                    'token {0!s} with different version {1:d} found'.format(existing_token.name, existing_token.version))
 
     def commit(self, trie, blessed_version, store):
         self._set_trie(trie, blessed_version, store)
@@ -200,11 +199,10 @@ class ModifyTransaction(Transaction):
                 if existing_token.version != token.version:
                     raise TokenMasterException(
                         ErrorCode.VERSION_CONFLICT,
-                        'token %s with different version %d found' %
-                        (existing_token.name, existing_token.version))
+                        'token {0!s} with different version {1:d} found'.format(existing_token.name, existing_token.version))
             elif token.version:
                 raise TokenMasterException(ErrorCode.NOT_FOUND,
-                                           'token %s not found' % token.name)
+                                           'token {0!s} not found'.format(token.name))
 
     def commit(self, trie, blessed_version, store):
         self._set_trie(trie, blessed_version, store)

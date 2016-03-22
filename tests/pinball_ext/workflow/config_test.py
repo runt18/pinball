@@ -40,7 +40,6 @@ class WorkflowConfigTestCase(unittest.TestCase):
                 if not getattr(job_config.template, '_REUSABLE', False):
                     if jobs.get(job_name):
                         raise Exception(
-                            "%s is declared in both workflow %s and %s." %
-                            (job_name, workflow_name, jobs[job_name]))
+                            "{0!s} is declared in both workflow {1!s} and {2!s}.".format(job_name, workflow_name, jobs[job_name]))
                     else:
                         jobs[job_name] = workflow_name

@@ -124,7 +124,7 @@ class ClusterExecutor(object):
 
     @property
     def job_name(self):
-        return "%s:%s" % (self.config.USER, self.config.NAME)
+        return "{0!s}:{1!s}".format(self.config.USER, self.config.NAME)
 
     def run_hive_query(self, query_str, upload_archive=True):
         """Run a hive query and return the raw results.
@@ -230,7 +230,7 @@ class ClusterExecutor(object):
     def get_table_description(self, table, database='default'):
         """Return table description string from Hive."""
         rows, stderr, job_ids = self.run_hive_query(
-            "USE %s; DESCRIBE EXTENDED %s;" % (database, table),
+            "USE {0!s}; DESCRIBE EXTENDED {1!s};".format(database, table),
             upload_archive=False)
         output = '\n'.join([' '.join(row) for row in rows])
         result = re.match(r'.*Detailed Table Information (.*)$',
@@ -255,24 +255,21 @@ class ClusterExecutor(object):
     def drop_partition(self, table, database, partition_name, partition):
         """Drop a partition in given table in Hive."""
         self.run_hive_query(
-            "USE %s; ALTER TABLE %s DROP PARTITION(%s='%s');" %
-            (database, table, partition_name, partition),
+            "USE {0!s}; ALTER TABLE {1!s} DROP PARTITION({2!s}='{3!s}');".format(database, table, partition_name, partition),
             upload_archive=False)
 
     @retry(subprocess.CalledProcessError, tries=3, delay=1, backoff=2)
     def drop_partitions_condition(self, table, database, condition):
         """Drop partitions satisfying the given condition."""
         self.run_hive_query(
-            "USE %s; ALTER TABLE %s DROP PARTITION(%s);" %
-            (database, table, condition),
+            "USE {0!s}; ALTER TABLE {1!s} DROP PARTITION({2!s});".format(database, table, condition),
             upload_archive=False)
 
     @retry(subprocess.CalledProcessError, tries=3, delay=1, backoff=2)
     def recover_partitions(self, table, database='default'):
         """Recover partitions in given table in Hive."""
         self.run_hive_query(
-            "USE %s; ALTER TABLE %s RECOVER PARTITIONS;" %
-            (database, table),
+            "USE {0!s}; ALTER TABLE {1!s} RECOVER PARTITIONS;".format(database, table),
             upload_archive=False)
 
     @retry(subprocess.CalledProcessError, tries=3, delay=1, backoff=2)
@@ -296,14 +293,12 @@ class ClusterExecutor(object):
         if not isinstance(partition_values, (list, tuple)):
             partition_values = [partition_values]
         if len(partition_names) != len(partition_values):
-            raise ValueError('Unmatched partition param: %s vs %s' %
-                             (partition_names, partition_values))
+            raise ValueError('Unmatched partition param: {0!s} vs {1!s}'.format(partition_names, partition_values))
 
         partition_str = \
-            ','.join(["%s='%s'" % t for t in zip(partition_names, partition_values)])
+            ','.join(["{0!s}='{1!s}'".format(*t) for t in zip(partition_names, partition_values)])
         self.run_hive_query(
-            "USE %s; ALTER TABLE %s ADD IF NOT EXISTS PARTITION(%s);" %
-            (database, table, partition_str),
+            "USE {0!s}; ALTER TABLE {1!s} ADD IF NOT EXISTS PARTITION({2!s});".format(database, table, partition_str),
             upload_archive=False)
 
     @retry(subprocess.CalledProcessError, tries=3, delay=1, backoff=2)
@@ -313,7 +308,7 @@ class ClusterExecutor(object):
         This will return only the top partition for a multi-partitioned table.
         """
         rows, stderr, job_ids = self.run_hive_query(
-            "USE %s; SHOW PARTITIONS %s;" % (database, table),
+            "USE {0!s}; SHOW PARTITIONS {1!s};".format(database, table),
             upload_archive=False)
         return sorted(set([r[0].split('/')[0].split('=')[1] for r in rows]))
 
@@ -326,7 +321,7 @@ class ClusterExecutor(object):
         format as accepted by the add_partition() function.
         """
         rows, stderr, job_ids = self.run_hive_query(
-            "USE %s; SHOW PARTITIONS %s;" % (database, table),
+            "USE {0!s}; SHOW PARTITIONS {1!s};".format(database, table),
             upload_archive=False)
         return [tuple(zip(*[pair.split('=') for pair in row[0].split('/')]))
                 for row in rows]
@@ -343,10 +338,10 @@ class ClusterExecutor(object):
     def does_table_exist(self, table, database='default'):
         """Return True if the table exists in the database, else False."""
         rows, stderr, job_ids = self.run_hive_query(
-            "USE %s; DESCRIBE EXTENDED %s;" % (database, table),
+            "USE {0!s}; DESCRIBE EXTENDED {1!s};".format(database, table),
             upload_archive=False)
         for row in rows[0]:
-            if row.startswith('Table %s does not exist' % table):
+            if row.startswith('Table {0!s} does not exist'.format(table)):
                 return False
         return True
 
@@ -363,8 +358,7 @@ class ClusterExecutor(object):
     def get_partition_description(self, table, partition, database='default'):
         """Return partition description string from Hive."""
         rows, stderr, job_ids = self.run_hive_query(
-            "USE %s; DESCRIBE EXTENDED %s PARTITION( %s );" %
-            (database, table, partition),
+            "USE {0!s}; DESCRIBE EXTENDED {1!s} PARTITION( {2!s} );".format(database, table, partition),
             upload_archive=False)
         return rows[-1][1]
 
@@ -384,8 +378,7 @@ class ClusterExecutor(object):
             table: table to set.
             location: path on S3 or HDFS.
         """
-        self.run_hive_query("USE %s; ALTER TABLE %s SET LOCATION '%s';" %
-                            (database, table, location),
+        self.run_hive_query("USE {0!s}; ALTER TABLE {1!s} SET LOCATION '{2!s}';".format(database, table, location),
                             upload_archive=False)
 
     @retry(subprocess.CalledProcessError, tries=3, delay=1, backoff=2)
@@ -396,8 +389,7 @@ class ClusterExecutor(object):
             table: table to rename.
             new_name: new name for the table.
         """
-        self.run_hive_query("USE %s; ALTER TABLE %s RENAME TO %s;" %
-                            (database, table, new_name),
+        self.run_hive_query("USE {0!s}; ALTER TABLE {1!s} RENAME TO {2!s};".format(database, table, new_name),
                             upload_archive=False)
 
     ###########################################
@@ -417,9 +409,9 @@ class ClusterExecutor(object):
         full_query_string = ''
         if upload_archive and self.config.USER_ARCHIVE_PATH:
             uploaded_archive_path = self._upload_archive()
-            full_query_string += "add archive %s;\n" % uploaded_archive_path
+            full_query_string += "add archive {0!s};\n".format(uploaded_archive_path)
 
-        full_query_string += 'set mapred.job.name=%s;\n' % self.job_name
+        full_query_string += 'set mapred.job.name={0!s};\n'.format(self.job_name)
 
         return full_query_string
 
@@ -441,7 +433,7 @@ class ClusterExecutor(object):
         if not self.config.SCHEDULER_QUEUE:
             return ''
         else:
-            return ' -D%s=%s ' % (self.config.SCHEDULER_PARAM,
+            return ' -D{0!s}={1!s} '.format(self.config.SCHEDULER_PARAM,
                                   self.config.SCHEDULER_QUEUE)
 
     def _get_scheduler_hive_setting(self):
@@ -450,12 +442,12 @@ class ClusterExecutor(object):
         else:
             # Can't have a trailing space after the new line since the following
             # comment lines can't have a leading space.
-            return ' SET %s=%s;\n' % (self.config.SCHEDULER_PARAM,
+            return ' SET {0!s}={1!s};\n'.format(self.config.SCHEDULER_PARAM,
                                       self.config.SCHEDULER_QUEUE)
 
     def _get_scheduler_mrjob_setting(self):
         if not self.config.SCHEDULER_QUEUE:
             return ''
         else:
-            return ' --jobconf="%s=%s" ' % (self.config.SCHEDULER_PARAM,
+            return ' --jobconf="{0!s}={1!s}" '.format(self.config.SCHEDULER_PARAM,
                                             self.config.SCHEDULER_QUEUE)

@@ -72,12 +72,12 @@ class ActiveTokenModel(TokenModel):
     # TODO(mao): refactor code to remove the duplicated table name creation.
     @staticmethod
     def get_table_name():
-        return 'active_tokens_%s' % master_name()
+        return 'active_tokens_{0!s}'.format(master_name())
 
     class Meta(TokenModel.Meta):
         # Table name is suffixed with master name.  This way multiple masters
         # can store their state in the same database.
-        db_table = 'active_tokens_%s' % master_name()
+        db_table = 'active_tokens_{0!s}'.format(master_name())
 
 
 class ArchivedTokenModel(TokenModel):
@@ -93,10 +93,10 @@ class ArchivedTokenModel(TokenModel):
 
     @staticmethod
     def get_table_name():
-        return 'archived_tokens_%s' % master_name()
+        return 'archived_tokens_{0!s}'.format(master_name())
 
     class Meta(TokenModel.Meta):
-        db_table = 'archived_tokens_%s' % master_name()
+        db_table = 'archived_tokens_{0!s}'.format(master_name())
 
 
 class CachedDataModel(models.Model):
@@ -113,7 +113,7 @@ class CachedDataModel(models.Model):
 
     @staticmethod
     def get_table_name():
-        return 'cached_data_%s' % master_name()
+        return 'cached_data_{0!s}'.format(master_name())
 
     class Meta:
-        db_table = 'cached_data_%s' % master_name()
+        db_table = 'cached_data_{0!s}'.format(master_name())

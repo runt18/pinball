@@ -60,7 +60,7 @@ class Status(object):
         for status, name in Status._STATUS_NAMES.items():
             if name == status_name:
                 return status
-        raise PinballException('Unknown status %s' % status_name)
+        raise PinballException('Unknown status {0!s}'.format(status_name))
 
 
 def _get_run_time(start_time, end_time):

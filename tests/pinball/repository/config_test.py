@@ -92,7 +92,7 @@ class JobConfigTestCase(unittest.TestCase):
 """
 
     def test_from_json(self):
-        job_json = '{%s, %s}' % (JobConfigTestCase._REQUIRED_JOB_JSON,
+        job_json = '{{{0!s}, {1!s}}}'.format(JobConfigTestCase._REQUIRED_JOB_JSON,
                                  JobConfigTestCase._OPTIONAL_JOB_JSON)
         job_config = JobConfig.from_json(job_json)
         self.assertFalse(job_config.is_condition)
@@ -113,19 +113,19 @@ class JobConfigTestCase(unittest.TestCase):
         self.assertEqual(20, job_config.abort_timeout_sec)
 
     def test_required_from_json(self):
-        job_json = '{%s}' % JobConfigTestCase._REQUIRED_JOB_JSON
+        job_json = '{{{0!s}}}'.format(JobConfigTestCase._REQUIRED_JOB_JSON)
         job_config = JobConfig.from_json(job_json)
         self.assertEqual('some_workflow', job_config.workflow)
         self.assertIsNone(job_config.warn_timeout_sec)
         self.assertIsNone(job_config.abort_timeout_sec)
 
     def test_fail_from_json(self):
-        job_json = '{%s, "unknown": "unknown"}' % (
-            JobConfigTestCase._REQUIRED_JOB_JSON)
+        job_json = '{{{0!s}, "unknown": "unknown"}}'.format((
+            JobConfigTestCase._REQUIRED_JOB_JSON))
         self.assertRaises(PinballException, JobConfig.from_json, job_json)
 
     def test_format(self):
-        job_json = '{%s, %s}' % (JobConfigTestCase._REQUIRED_JOB_JSON,
+        job_json = '{{{0!s}, {1!s}}}'.format(JobConfigTestCase._REQUIRED_JOB_JSON,
                                  JobConfigTestCase._OPTIONAL_JOB_JSON)
         job_config = JobConfig.from_json(job_json)
         formatted_config = job_config.format()

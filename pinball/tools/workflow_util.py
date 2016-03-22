@@ -97,7 +97,7 @@ class Start(Command):
                                                 ParserCaller.WORKFLOW_UTIL)
         workflow_tokens = config_parser.get_workflow_tokens(self._workflow)
         if not workflow_tokens:
-            return 'workflow %s not found in %s\n' % (
+            return 'workflow {0!s} not found in {1!s}\n'.format(
                 self._workflow, str(PinballConfig.PARSER_PARAMS))
         request = ModifyRequest()
         request.updates = workflow_tokens
@@ -107,7 +107,7 @@ class Start(Command):
         if not name.instance:
             name = Name.from_event_token_name(token.name)
         client.modify(request)
-        return 'exported workflow %s instance %s.  Its tokens are under %s' % (
+        return 'exported workflow {0!s} instance {1!s}.  Its tokens are under {2!s}'.format(
             name.workflow, name.instance, name.get_instance_prefix())
 
 
@@ -131,9 +131,9 @@ class Stop(Command):
                                           self._instance,
                                           client)
         if not instance_tokens:
-            return 'workflow %s instance %s not found\n' % (self._workflow,
+            return 'workflow {0!s} instance {1!s} not found\n'.format(self._workflow,
                                                             self._instance)
-        message = 'Remove workflow %s instance %s' % (self._workflow,
+        message = 'Remove workflow {0!s} instance {1!s}'.format(self._workflow,
                                                       self._instance)
         output = ''
         if self._force or confirm(message):
@@ -153,7 +153,7 @@ class Stop(Command):
                     instance_tokens = _get_all_tokens(self._workflow,
                                                       self._instance,
                                                       client)
-            output += 'removed %d token(s) in %d tries\n' % (
+            output += 'removed {0:d} token(s) in {1:d} tries\n'.format(
                 len(instance_tokens), i)
         return output
 
@@ -177,7 +177,7 @@ class Pause(Command):
     def _own_tokens(tokens):
         for token in tokens:
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-            token.owner = 'workflow_util user %s machine %s time %s' % (
+            token.owner = 'workflow_util user {0!s} machine {1!s} time {2!s}'.format(
                 getpass.getuser(), socket.gethostname(), timestamp)
             token.expirationTime = sys.maxint
 
@@ -186,9 +186,9 @@ class Pause(Command):
                                           self._instance,
                                           client)
         if not instance_tokens:
-            return 'workflow %s instance %s not found\n' % (self._workflow,
+            return 'workflow {0!s} instance {1!s} not found\n'.format(self._workflow,
                                                             self._instance)
-        message = 'pause workflow %s instance %s' % (self._workflow,
+        message = 'pause workflow {0!s} instance {1!s}'.format(self._workflow,
                                                      self._instance)
         output = ''
         if self._force or confirm(message):
@@ -210,10 +210,10 @@ class Pause(Command):
                                                       client)
                 i += 1
             if i < MAX_TRIES:
-                output += 'claimed %d token(s) in %d tries\n' % (
+                output += 'claimed {0:d} token(s) in {1:d} tries\n'.format(
                     len(instance_tokens), i + 1)
             else:
-                output += 'failed to claim token(s) in %d tries' % MAX_TRIES
+                output += 'failed to claim token(s) in {0:d} tries'.format(MAX_TRIES)
         return output
 
 
@@ -237,9 +237,9 @@ class Resume(Command):
                                           self._instance,
                                           client)
         if not instance_tokens:
-            return 'workflow %s instance %s not found\n' % (self._workflow,
+            return 'workflow {0!s} instance {1!s} not found\n'.format(self._workflow,
                                                             self._instance)
-        message = 'resume workflow %s instance %s' % (self._workflow,
+        message = 'resume workflow {0!s} instance {1!s}'.format(self._workflow,
                                                       self._instance)
         output = ''
         if self._force or confirm(message):
@@ -248,8 +248,8 @@ class Resume(Command):
                 token.expirationTime = None
             request = ModifyRequest(updates=instance_tokens)
             client.modify(request)
-            output += ('released ownership of %d token(s)\n' %
-                       len(instance_tokens))
+            output += ('released ownership of {0:d} token(s)\n'.format(
+                       len(instance_tokens)))
         return output
 
 
@@ -323,7 +323,7 @@ class Retry(Command):
                 modify_request.updates.append(runnable_job_token)
 
         if not modify_request.updates and not modify_request.deletes:
-            return 'no failed jobs found in workflow %s instance %s\n' % (
+            return 'no failed jobs found in workflow {0!s} instance {1!s}\n'.format(
                 self._workflow, self._instance)
         if not modify_request.updates and modify_request.deletes:
             return 'found ARCHIVE token but no failed jobs in workflow %s ' \
@@ -338,7 +338,7 @@ class Retry(Command):
                                                   self._workflow,
                                                   self._instance)
         assert (len(modify_request.updates) == len(modify_request.deletes) - 1)
-        return 'retried %d job(s) in workflow %s instance %s\n' % (
+        return 'retried {0:d} job(s) in workflow {1!s} instance {2!s}\n'.format(
             len(modify_request.updates), self._workflow, self._instance)
 
     def _retry_archived(self, client, store):
@@ -346,7 +346,7 @@ class Retry(Command):
         instance_tokens = store.read_archived_tokens(
             name_prefix=instance_name.get_instance_prefix())
         if not instance_tokens:
-            return 'workflow %s instance %s not found\n' % (self._workflow,
+            return 'workflow {0!s} instance {1!s} not found\n'.format(self._workflow,
                                                             self._instance)
 
         request = ModifyRequest(updates=[])
@@ -384,7 +384,7 @@ class Retry(Command):
             # it is a signal token.  We ignore those.
 
         if not has_failed_jobs:
-            return 'no failed jobs found in workflow %s instance %s\n' % (
+            return 'no failed jobs found in workflow {0!s} instance {1!s}\n'.format(
                 self._workflow, self._instance)
 
         client.modify(request)
@@ -401,7 +401,7 @@ class Retry(Command):
                                    'to too many instances are running!' %
                                    (self._workflow, self._instance))
 
-        message = 'retry workflow %s instance %s' % (self._workflow,
+        message = 'retry workflow {0!s} instance {1!s}'.format(self._workflow,
                                                      self._instance)
         output = ''
         if self._force or confirm(message):
@@ -446,7 +446,7 @@ class Redo(Command):
 
     def execute(self, client, store):
         output = ''
-        message = 'redo execution %d of job %s in workflow %s instance %s' % (
+        message = 'redo execution {0:d} of job {1!s} in workflow {2!s} instance {3!s}'.format(
             self._execution, self._job, self._workflow, self._instance)
         if self._force or confirm(message):
             # Retrieve job token.
@@ -484,8 +484,8 @@ class Redo(Command):
                 waiting_job.owner = None
                 waiting_job.expirationTime = None
                 modify_request.updates.append(waiting_job)
-                output = ('could not find execution %d in job history\n' %
-                          self._execution)
+                output = ('could not find execution {0:d} in job history\n'.format(
+                          self._execution))
             else:
                 job_name.job_state = Name.RUNNABLE_STATE
                 job.events = execution_record.events
@@ -539,7 +539,7 @@ class Poison(Command):
     def _poison_active(self, client):
         analyzer = Analyzer.from_client(client, self._workflow, self._instance)
         if not analyzer.get_tokens():
-            return 'workflow %s instance %s not found\n' % (self._workflow,
+            return 'workflow {0!s} instance {1!s} not found\n'.format(self._workflow,
                                                             self._instance)
         analyzer.poison(self._jobs)
         event_tokens = analyzer.get_new_event_tokens()
@@ -550,7 +550,7 @@ class Poison(Command):
         request = ModifyRequest(updates=event_tokens, deletes=archive_tokens)
 
         client.modify(request)
-        return 'poisoned workflow %s instance %s roots %s\n' % (
+        return 'poisoned workflow {0!s} instance {1!s} roots {2!s}\n'.format(
             self._workflow, self._instance, self._jobs)
 
     def _poison_inactive(self, client, store):
@@ -559,12 +559,12 @@ class Poison(Command):
                                            self._workflow,
                                            self._instance)
             if not analyzer.get_tokens():
-                return 'workflow %s instance %s not found\n' % (
+                return 'workflow {0!s} instance {1!s} not found\n'.format(
                     self._workflow, self._instance)
         else:
             analyzer = Analyzer.from_parser_params(self._workflow)
             if not analyzer.get_tokens():
-                return 'workflow %s not found in %s\n' % (
+                return 'workflow {0!s} not found in {1!s}\n'.format(
                     self._workflow, str(PinballConfig.PARSER_PARAMS))
         analyzer.clear_job_histories()
         analyzer.poison(self._jobs)
@@ -583,10 +583,10 @@ class Poison(Command):
 
     def execute(self, client, store):
         if self._instance:
-            message = 'poison workflow %s instance %s roots %s' % (
+            message = 'poison workflow {0!s} instance {1!s} roots {2!s}'.format(
                 self._workflow, self._instance, self._jobs)
         else:
-            message = 'poison workflow %s roots %s parser_params config %s' % (
+            message = 'poison workflow {0!s} roots {1!s} parser_params config {2!s}'.format(
                 self._workflow, self._jobs, str(PinballConfig.PARSER_PARAMS))
         if self._force or confirm(message):
             active = False
@@ -637,16 +637,16 @@ class ModifySignal(Command):
             action_prefix = 'UN'
         if self._instance:
             assert self._workflow
-            message = '%s%s workflow %s instance %s' % (action_prefix,
+            message = '{0!s}{1!s} workflow {2!s} instance {3!s}'.format(action_prefix,
                                                         action_name,
                                                         self._workflow,
                                                         self._instance)
         elif self._workflow:
-            message = '%s%s all instances of workflow %s' % (action_prefix,
+            message = '{0!s}{1!s} all instances of workflow {2!s}'.format(action_prefix,
                                                              action_name,
                                                              self._workflow)
         else:
-            message = '%s%s all workflows' % (action_prefix, action_name)
+            message = '{0!s}{1!s} all workflows'.format(action_prefix, action_name)
         output = ''
         if self._force or confirm(message):
             if self._workflow:
@@ -670,11 +670,11 @@ class ModifySignal(Command):
                             signal=action_name)
                 if self._add:
                     signaller.set_action(self._action)
-                    output += ('set %s.  Its token is %s\n' % (action_name,
+                    output += ('set {0!s}.  Its token is {1!s}\n'.format(action_name,
                                name.get_signal_token_name()))
                 else:
                     signaller.remove_action(self._action)
-                    output += ('removed %s from %s\n' % (action_name,
+                    output += ('removed {0!s} from {1!s}\n'.format(action_name,
                                name.get_signal_token_name()))
         return output
 
@@ -771,11 +771,11 @@ class ReSchedule(ModifySchedule):
                                                 ParserCaller.WORKFLOW_UTIL)
         workflow_names = config_parser.get_workflow_names()
         if (self._workflow and not self._workflow in workflow_names):
-            return 'workflow %s not found\n' % self._workflow
+            return 'workflow {0!s} not found\n'.format(self._workflow)
         workflows = ([self._workflow] if self._workflow else workflow_names)
         if not workflows:
-            return 'no workflows found in %s' % str(PinballConfig.PARSER_PARAMS)
-        message = 'reschedule workflows %s' % workflows
+            return 'no workflows found in {0!s}'.format(str(PinballConfig.PARSER_PARAMS))
+        message = 'reschedule workflows {0!s}'.format(workflows)
         output = ''
         if self._force or confirm(message):
             request = ModifyRequest(updates=[])
@@ -826,13 +826,13 @@ class UnSchedule(ModifySchedule):
         assert len(schedule_tokens) == 1
         schedule_token = schedule_tokens[0]
         if not schedule_token:
-            return 'schedule for workflow %s not found\n' % self._workflow
-        message = 'remove schedule for workflow %s' % self._workflow
+            return 'schedule for workflow {0!s} not found\n'.format(self._workflow)
+        message = 'remove schedule for workflow {0!s}'.format(self._workflow)
         output = ''
         if self._force or confirm(message):
             request = ModifyRequest(deletes=[schedule_token])
             client.modify(request)
-            output = 'removed schedule for workflow %s\n' % self._workflow
+            output = 'removed schedule for workflow {0!s}\n'.format(self._workflow)
         return output
 
 
@@ -952,7 +952,7 @@ class Reload(Command):
                          job_tokens])
         missing_job_names = job_names.difference(new_job_names)
         if missing_job_names:
-            self._output = 'jobs %s not found in workflow %s defined in %s' % (
+            self._output = 'jobs {0!s} not found in workflow {1!s} defined in {2!s}'.format(
                 missing_job_names, self._workflow, str(PinballConfig.PARSER_PARAMS))
             return False
         for job_token in job_tokens:
@@ -968,7 +968,7 @@ class Reload(Command):
                                                 ParserCaller.WORKFLOW_UTIL)
         workflow_names = config_parser.get_workflow_names()
         if self._workflow not in workflow_names:
-            return 'workflow %s not found in %s\n' % (
+            return 'workflow {0!s} not found in {1!s}\n'.format(
                 self._workflow, str(PinballConfig.PARSER_PARAMS))
         if self._jobs:
             job_tokens = self._own_selected_job_tokens(client)
@@ -977,8 +977,8 @@ class Reload(Command):
         if not job_tokens:
             return self._output
         if self._update_job_tokens(job_tokens, config_parser):
-            self._output = ('reloaded %s in workflow %s instance %s' % (
-                'jobs %s' % self._jobs if self._jobs else 'all jobs',
+            self._output = ('reloaded {0!s} in workflow {1!s} instance {2!s}'.format(
+                'jobs {0!s}'.format(self._jobs) if self._jobs else 'all jobs',
                 self._workflow,
                 self._instance))
         self._unown_tokens(client, job_tokens)
@@ -1043,7 +1043,7 @@ class Alter(Command):
             elif self._MODE == Alter.ENABLE:
                 job.disabled = False
             else:
-                assert False, 'unrecognized mode %d' % self._MODE
+                assert False, 'unrecognized mode {0:d}'.format(self._MODE)
             job_token.data = pickle.dumps(job)
             request.updates.append(job_token)
         try:
@@ -1065,7 +1065,7 @@ class Alter(Command):
         if delta:
             return 'job(s) %s not found in the master.  Note that only jobs ' \
                    'of a running workflow can be %sd' % (list(delta), mode)
-        message = '%s %d jobs in workflow %s instance %s' % (mode,
+        message = '{0!s} {1:d} jobs in workflow {2!s} instance {3!s}'.format(mode,
                                                              len(self._jobs),
                                                              self._workflow,
                                                              self._instance)
@@ -1079,11 +1079,11 @@ class Alter(Command):
                 job_tokens = self._get_job_tokens(client)
                 i += 1
             if i < MAX_TRIES:
-                output += '%sd %d job(s) in %d tries\n' % (mode,
+                output += '{0!s}d {1:d} job(s) in {2:d} tries\n'.format(mode,
                                                            len(job_tokens),
                                                            i + 1)
             else:
-                output += 'failed to %s job(s) in %d tries' % (mode, MAX_TRIES)
+                output += 'failed to {0!s} job(s) in {1:d} tries'.format(mode, MAX_TRIES)
         return output
 
 
@@ -1140,11 +1140,11 @@ class Cleanup(Command):
         else:
             print 'removing tokens:'
             for token in tokens_to_delete:
-                print '\t%s' % token.name
+                print '\t{0!s}'.format(token.name)
             print 'removing directories:'
             for directory in directories_to_delete:
-                print '\t%s' % directory
-            message = 'remove %d tokens and %d directories' % (
+                print '\t{0!s}'.format(directory)
+            message = 'remove {0:d} tokens and {1:d} directories'.format(
                 len(tokens_to_delete), len(directories_to_delete))
             if self._force or confirm(message):
                 store.delete_archived_tokens(tokens_to_delete)
@@ -1152,7 +1152,7 @@ class Cleanup(Command):
                 for directory in directories_to_delete:
                     self._delete_directory(directory)
                 deleted_directories = len(directories_to_delete)
-        output += 'removed %d token(s) and %d directory(ies)\n' % (
+        output += 'removed {0:d} token(s) and {1:d} directory(ies)\n'.format(
             deleted_tokens, deleted_directories)
         return output
 
@@ -1174,13 +1174,13 @@ class RebuildCache(Command):
 
     def execute(self, client, store):
         cache_size = len(store.read_cached_data_names())
-        message = 'rebuild cache with %d data items' % cache_size
+        message = 'rebuild cache with {0:d} data items'.format(cache_size)
         if self._force or confirm(message):
             store.clear_cached_data()
             data_builder = DataBuilder(store, use_cache=True)
             data_builder.get_workflows()
             cache_size = len(store.read_cached_data_names())
-            return 'rebuilt data cache.  It now has %d data items' % cache_size
+            return 'rebuilt data cache.  It now has {0:d} data items'.format(cache_size)
         return ''
 
 

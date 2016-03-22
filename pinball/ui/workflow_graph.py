@@ -60,7 +60,7 @@ class WorkflowGraph(object):
             for output in job.outputs:
                 edge = pydot.Edge(job.job, output)
                 self._graph.add_edge(edge)
-                edge.set_id('%s/%s' % (job.job, output))
+                edge.set_id('{0!s}/{1!s}'.format(job.job, output))
 
     def get_svg(self):
         return self._graph.create_svg()

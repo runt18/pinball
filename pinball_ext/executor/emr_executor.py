@@ -73,13 +73,13 @@ class EMRExecutor(ClusterExecutor):
         full_query_string += self._get_scheduler_hive_setting()
         full_query_string += query_str
 
-        self.log.info('Running query:\n %s' % full_query_string)
+        self.log.info('Running query:\n {0!s}'.format(full_query_string))
 
         query_dir = self._mk_tmp_dir()
         hadoop_utils.put_string_to_hadoop(
             self.hadoop_host_config,
             full_query_string,
-            '%s/query.ql' % query_dir)
+            '{0!s}/query.ql'.format(query_dir))
 
         hadoop_utils.run_and_check_command_in_hadoop(
             self.hadoop_host_config,
@@ -88,13 +88,12 @@ class EMRExecutor(ClusterExecutor):
             % (query_dir, query_dir, query_dir),
             log_line_processor=self._hive_query_log_line_processor)
 
-        q_stdout = self._get_raw_query_result('%s/out.csv' % query_dir)
-        q_stderr = self._get_raw_query_result('%s/out.err' % query_dir)
+        q_stdout = self._get_raw_query_result('{0!s}/out.csv'.format(query_dir))
+        q_stderr = self._get_raw_query_result('{0!s}/out.err'.format(query_dir))
 
         self._check_for_hive_failure_message(q_stderr)
 
-        self.log.info("Output has %d rows. First 10 rows:\n\t%s"
-                      % (len(q_stdout),
+        self.log.info("Output has {0:d} rows. First 10 rows:\n\t{1!s}".format(len(q_stdout),
                          '\n\t'.join([str(o) for o in q_stdout[:9]])))
 
         return q_stdout, q_stderr, self.job_ids
@@ -131,7 +130,7 @@ class EMRExecutor(ClusterExecutor):
                 self.job_ids.append(job_id)
                 return {'job_id': job_id,
                         'job_url': job_url,
-                        'kill_id': '%s/%s' % (self.config.PLATFORM, job_id)}
+                        'kill_id': '{0!s}/{1!s}'.format(self.config.PLATFORM, job_id)}
         return {}
 
     @retry(subprocess.CalledProcessError)
@@ -141,12 +140,12 @@ class EMRExecutor(ClusterExecutor):
         query_dir = os.path.join(
             self.config.HIVE_QUERIES_DIR,
             self.config.USER,
-            '%s_%s_%s' % (query_timestamp,
+            '{0!s}_{1!s}_{2!s}'.format(query_timestamp,
                           utils.get_random_string(),
                           self.config.NAME))
         hadoop_utils.run_and_check_command_in_hadoop(
             self.hadoop_host_config,
-            command='mkdir -p %s' % query_dir)
+            command='mkdir -p {0!s}'.format(query_dir))
         return query_dir
 
     @retry(subprocess.CalledProcessError)
@@ -162,7 +161,7 @@ class EMRExecutor(ClusterExecutor):
         rows = []
         with hadoop_utils.run_command_in_hadoop(
                 self.hadoop_host_config,
-                command='cat %s' % output_file) as hive_out:
+                command='cat {0!s}'.format(output_file)) as hive_out:
             for line in hive_out:
                 if line.strip():
                     rows.append(line.strip().split('\t'))
@@ -170,7 +169,7 @@ class EMRExecutor(ClusterExecutor):
 
     def kill_job(self, job_id):
         """Kills a EMR job with the given job_id."""
-        cmd = 'hadoop job -kill %s' % job_id
+        cmd = 'hadoop job -kill {0!s}'.format(job_id)
         hadoop_utils.run_and_check_command_in_hadoop(
             self.hadoop_host_config,
             cmd)
@@ -193,19 +192,19 @@ class EMRExecutor(ClusterExecutor):
 
         # create arguments string
         arguments = \
-            ' '.join('-D%s=%s' % (k, v) for k, v in jobconf_args.iteritems())
+            ' '.join('-D{0!s}={1!s}'.format(k, v) for k, v in jobconf_args.iteritems())
         arguments += ' '
         arguments += ' '.join(extra_args)
 
         base_dir = self.get_job_resource_dir(self.config.USER)
         libjars_glob = ' '.join(
-            ['%s/%s/*.jar' % (base_dir, d) for d in self.config.USER_LIBJAR_DIRS])
-        libjars = '`echo %s | tr \' \' \',\'`' % libjars_glob
+            ['{0!s}/{1!s}/*.jar'.format(base_dir, d) for d in self.config.USER_LIBJAR_DIRS])
+        libjars = '`echo {0!s} | tr \' \' \',\'`'.format(libjars_glob)
 
-        user_jar_dirs = ['%s/%s/*' % (base_dir, d) for d in self.config.USER_LIBJAR_DIRS]
+        user_jar_dirs = ['{0!s}/{1!s}/*'.format(base_dir, d) for d in self.config.USER_LIBJAR_DIRS]
         hadoop_classpath = ':'.join(user_jar_dirs)
 
-        app_jar_path = '%s/%s' % (base_dir, self.config.USER_APPJAR_PATH)
+        app_jar_path = '{0!s}/{1!s}'.format(base_dir, self.config.USER_APPJAR_PATH)
 
         # temp dir for holding stdout and stderr
         query_dir = self._mk_tmp_dir()
@@ -227,8 +226,8 @@ class EMRExecutor(ClusterExecutor):
                ' 2>&1 > %(query_dir)s/out.csv | tee %(query_dir)s/out.err') % \
             var_dict
 
-        self.log.info('Running class:%s with arguments:%s' % (class_name, arguments))
-        self.log.info('Full command: %s' % cmd)
+        self.log.info('Running class:{0!s} with arguments:{1!s}'.format(class_name, arguments))
+        self.log.info('Full command: {0!s}'.format(cmd))
 
         # run command
         hadoop_utils.run_and_check_command_in_hadoop(
@@ -236,8 +235,8 @@ class EMRExecutor(ClusterExecutor):
             cmd,
             log_line_processor=self._hadoop_job_log_line_processor)
 
-        rows = self._get_raw_query_result('%s/out.csv' % query_dir)
-        stderr = self._get_raw_query_result('%s/out.err' % query_dir)
+        rows = self._get_raw_query_result('{0!s}/out.csv'.format(query_dir))
+        stderr = self._get_raw_query_result('{0!s}/out.err'.format(query_dir))
 
         return rows, stderr, self.job_ids
 
@@ -252,7 +251,7 @@ class EMRExecutor(ClusterExecutor):
             job_id = m.group('job_id')
             self.job_ids.append(job_id)
             return {'job_id': job_id,
-                    'kill_id': '%s/%s' % (self.config.PLATFORM, job_id)}
+                    'kill_id': '{0!s}/{1!s}'.format(self.config.PLATFORM, job_id)}
         return {}
 
     def get_job_resource_dir(self, run_as_user):

@@ -243,7 +243,7 @@ class Analyzer(object):
                                 instance=self._instance,
                                 job=job_name,
                                 input_name=job_input,
-                                event='poison_%d' % len(input_prefixes))
+                                event='poison_{0:d}'.format(len(input_prefixes)))
                     input_prefix = name.get_input_prefix()
                     if input_prefix not in input_prefixes:
                         input_prefixes.add(input_prefix)

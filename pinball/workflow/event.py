@@ -42,7 +42,7 @@ class Event(TokenData):
         }
 
     def __str__(self):
-        return 'Event(creator=%s, attributes=%s)' % (self.creator,
+        return 'Event(creator={0!s}, attributes={1!s})'.format(self.creator,
                                                      self.attributes)
 
     def __repr__(self):

@@ -161,7 +161,7 @@ class ExecutionView(TemplateView):
             context[key] = value
         properties = []
         for key, value in execution_data.properties.items():
-            properties.append('%s=%s' % (key, value))
+            properties.append('{0!s}={1!s}'.format(key, value))
         context['properties'] = ', '.join(properties)
         if not execution_data.end_time:
             context['end_time'] = ''
@@ -268,7 +268,7 @@ class TokenPathsView(TemplateView):
         parents = []
         prefix = '/'
         for element in path_elements[:-1]:
-            prefix += '%s/' % element
+            prefix += '{0!s}/'.format(element)
             parents.append((element, prefix))
         context['parents'] = parents
         return context
@@ -325,7 +325,7 @@ def status(request):
         elif data_builder.is_signal_set(workflow, instance, Signal.DRAIN):
             status = ['draining']
         if not _is_master_alive():
-            status.append('no master at %s:%d' % (socket.gethostname(),
+            status.append('no master at {0!s}:{1:d}'.format(socket.gethostname(),
                                                   PinballConfig.MASTER_PORT))
         status_json = json.dumps(status)
     except:
@@ -341,7 +341,7 @@ def signin(request):
     if request.method == 'POST' and 'signin-domain' in request.POST.keys():
         domain = request.POST.get('signin-domain')
         if not oauth2_flow.domain_authenticated(domain):
-            messages.add_message(request, SIGNIN, 'Domain not authorized: %s.' % domain,
+            messages.add_message(request, SIGNIN, 'Domain not authorized: {0!s}.'.format(domain),
                                  fail_silently=True)
             return render_to_response('signin.html', context,
                                       context_instance=RequestContext(request),
@@ -391,8 +391,7 @@ def logout(request):
         return HttpResponseRedirect('/signin/')
     crypter = oauth2.Crypter()
     try:
-        logout_uri = 'https://accounts.google.com/o/oauth2/revoke?token=%s' \
-            % crypter.decrypt(credential_token)
+        logout_uri = 'https://accounts.google.com/o/oauth2/revoke?token={0!s}'.format(crypter.decrypt(credential_token))
     except oauth2.CryptoException:
         response = HttpResponseRedirect('/signin/')
     else:

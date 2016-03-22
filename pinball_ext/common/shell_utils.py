@@ -72,7 +72,7 @@ def scp_file_to_host(user_name,
     if ssh_key_file:
         scp_command += ['-i', ssh_key_file]
     scp_command += [local_path]
-    scp_command += ['%s@%s:%s' % (user_name, remote_host, remote_path)]
+    scp_command += ['{0!s}@{1!s}:{2!s}'.format(user_name, remote_host, remote_path)]
     scp_command = ' '.join(scp_command)
 
     LOG.info('Running command: %s', scp_command)
@@ -108,12 +108,12 @@ def rsync_over_ssh(user_name,
     if ssh_key_file:
         ssh_command += ['-i', ssh_key_file]
 
-    command = ['rsync'] + rsync_options + ['-e ' + '\"%s\"' % ' '.join(ssh_command)]
+    command = ['rsync'] + rsync_options + ['-e ' + '\"{0!s}\"'.format(' '.join(ssh_command))]
     command += [local_path]
-    command += ['%s@%s:%s' % (user_name, remote_host, remote_path)]
+    command += ['{0!s}@{1!s}:{2!s}'.format(user_name, remote_host, remote_path)]
     command = ' '.join(command)
 
-    LOG.info('Running command:%s' % command)
+    LOG.info('Running command:{0!s}'.format(command))
 
     subprocess.check_call(command, shell=True)
 
@@ -153,10 +153,10 @@ def run_ssh_command(user_name,
     if forward_agent:
         ssh_command += ['-A']
 
-    ssh_command += ['%s@%s' % (user_name, host_name)]
-    ssh_command += ["cd %s && %s" % (cmd_work_dir, command)]
+    ssh_command += ['{0!s}@{1!s}'.format(user_name, host_name)]
+    ssh_command += ["cd {0!s} && {1!s}".format(cmd_work_dir, command)]
 
-    LOG.info('Running command:%s' % ssh_command)
+    LOG.info('Running command:{0!s}'.format(ssh_command))
 
     if check_output:
         return subprocess.check_call(ssh_command)

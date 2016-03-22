@@ -60,7 +60,7 @@ class OAuth2Flow(object):
     if not PinballConfig.UI_HOST:
         _redirect_uri = 'http://localhost:8080/oauth2callback/'
     else:
-        _redirect_uri = 'https://%s/oauth2callback/' % PinballConfig.UI_HOST
+        _redirect_uri = 'https://{0!s}/oauth2callback/'.format(PinballConfig.UI_HOST)
     _flow = {}
     for domain in PinballConfig.AUTHENTICATION_DOMAINS:
         _flow[domain] = OAuth2WebServerFlow(client_id=PinballConfig.GOOGLE_CLIENT_ID,

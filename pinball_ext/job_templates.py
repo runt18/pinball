@@ -50,7 +50,7 @@ class JobTemplateBase(object):
         return self.name == other.name
 
     def __hash__(self):
-        return ('name=%s' % self.name).__hash__()
+        return ('name={0!s}'.format(self.name)).__hash__()
 
     @abc.abstractmethod
     def get_pinball_job(self, inputs, outputs, params):
@@ -118,23 +118,23 @@ class JobTemplate(JobTemplateBase):
             job_params['end_date'] = params['end_date']
         assert job_params, 'job_params should not be empty!'
         job_params_text = ','.join(
-            ['%s=%s' % (k, v) for k, v in job_params.iteritems()])
+            ['{0!s}={1!s}'.format(k, v) for k, v in job_params.iteritems()])
 
         # Config executor for job runner. (Only ClusterJob needs executor)
         executor_params = ''
         if self._executor:
-            executor_params = '--executor=%s ' % self._executor
+            executor_params = '--executor={0!s} '.format(self._executor)
 
         # Executor config.
         executor_config = ''
         if self._executor_config:
             executor_config_text = ','.join(
-                ['%s=%s' % (k, v) for k, v in self._executor_config.iteritems()])
-            executor_config = '--executor_config="%s" ' % executor_config_text
+                ['{0!s}={1!s}'.format(k, v) for k, v in self._executor_config.iteritems()])
+            executor_config = '--executor_config="{0!s}" '.format(executor_config_text)
 
         runner_extra_params = ''
         if self.write_lock:
-            runner_extra_params += '--write_lock=%s ' % self.write_lock
+            runner_extra_params += '--write_lock={0!s} '.format(self.write_lock)
 
         # Construct job runner command line.
         job_runner_command = self.command_template % {
@@ -199,7 +199,7 @@ class ConditionTemplateBase(object):
         return self.name == other.name
 
     def __hash__(self):
-        return ('name=%s' % self.name).__hash__()
+        return ('name={0!s}'.format(self.name)).__hash__()
 
     @abc.abstractmethod
     def get_pinball_condition(self, outputs):

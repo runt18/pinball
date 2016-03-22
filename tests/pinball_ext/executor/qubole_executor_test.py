@@ -42,9 +42,9 @@ def _mock_run_qubole_cmd(qb_cmd, log_line, kwargs):
 def _mock_list_s3_directory(s3_dir):
     print(s3_dir)
     if s3_dir[-1] == '1':
-        return ['%s/jar10.jar' % s3_dir, '%s/jar11.jar' % s3_dir]
+        return ['{0!s}/jar10.jar'.format(s3_dir), '{0!s}/jar11.jar'.format(s3_dir)]
     elif s3_dir[-1] == '2':
-        return ['%s/jar20.jar' % s3_dir, '%s/jar21.jar' % s3_dir]
+        return ['{0!s}/jar20.jar'.format(s3_dir), '{0!s}/jar21.jar'.format(s3_dir)]
     return []
 
 

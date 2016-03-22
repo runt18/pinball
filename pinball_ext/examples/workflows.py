@@ -34,5 +34,5 @@ WORKFLOWS = {
         schedule=ScheduleConfig(recurrence=timedelta(days=1),
                                 reference_timestamp=datetime(
                                 year=2015, month=2, day=1, second=1)),
-        notify_emails='%s' % PinballConfig.DEFAULT_EMAIL)
+        notify_emails='{0!s}'.format(PinballConfig.DEFAULT_EMAIL))
 }

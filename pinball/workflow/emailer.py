@@ -103,19 +103,19 @@ Name | Last start | Last end | Run time | Status | Url
 """
         jobs = ''
         for job_data in jobs_data:
-            jobs += '%s | ' % job_data.job
+            jobs += '{0!s} | '.format(job_data.job)
             if not job_data.last_start_time:
                 jobs += '| | '
             else:
-                jobs += '%s | ' % timestamp_to_str(job_data.last_start_time)
+                jobs += '{0!s} | '.format(timestamp_to_str(job_data.last_start_time))
                 if not job_data.last_end_time:
                     jobs += '| | '
                 else:
-                    jobs += '%s | ' % timestamp_to_str(job_data.last_end_time)
+                    jobs += '{0!s} | '.format(timestamp_to_str(job_data.last_end_time))
                     delta = int(job_data.last_end_time -
                                 job_data.last_start_time)
-                    jobs += '%s | ' % datetime.timedelta(seconds=delta)
-            jobs += '%s | ' % Status.to_string(job_data.status)
+                    jobs += '{0!s} | '.format(datetime.timedelta(seconds=delta))
+            jobs += '{0!s} | '.format(Status.to_string(job_data.status))
             jobs += ('http://%s:%s/executions/?workflow=%s&instance=%s&'
                      'job=%s\n' % (self._ui_host,
                                    self._ui_port,
@@ -192,8 +192,8 @@ workflow=%(workflow)s&instance=%(instance)s">here</a> for details.
                          '<td style="border:1px dotted grey;"></td>'
                          '<td style="border:1px dotted grey;"></td>')
             else:
-                jobs += ('<td style="border:1px dotted grey;">%s</td>' %
-                         timestamp_to_str(job_data.last_start_time))
+                jobs += ('<td style="border:1px dotted grey;">{0!s}</td>'.format(
+                         timestamp_to_str(job_data.last_start_time)))
                 if not job_data.last_end_time:
                     jobs += ('<td style="border:1px dotted grey;"></td>'
                              '<td style="border:1px dotted grey;"></td>')
@@ -253,7 +253,7 @@ workflow=%(workflow)s&instance=%(instance)s">here</a> for details.
         text = self._get_instance_end_text(instance_data, jobs_data)
         html = self._get_instance_end_html(instance_data, jobs_data)
         status = Status.to_string(instance_data.status)
-        subject = '%s for workflow %s' % (status, instance_data.workflow)
+        subject = '{0!s} for workflow {1!s}'.format(status, instance_data.workflow)
         self._send_message(subject, to, text, html)
 
     def _get_job_execution_params(self, job_execution_data):
@@ -423,7 +423,7 @@ style="border:1px dotted grey;background-color:%(exit_code_color)s;">
         text = self._get_job_execution_end_text(job_execution_data)
         html = self._get_job_execution_end_html(job_execution_data)
 
-        subject = "Workflow %s's job %s finished with exit code %d" % (
+        subject = "Workflow {0!s}'s job {1!s} finished with exit code {2:d}".format(
             job_execution_data.workflow, job_execution_data.job,
             job_execution_data.exit_code)
         self._send_message(subject, to, text, html)
@@ -545,14 +545,13 @@ workflow=%(workflow)s&instance=%(instance)s&job=%(job)s">%(job)s</a>
         text = self._get_job_timeout_warning_text(job_execution_data)
         html = self._get_job_timeout_warning_html(job_execution_data)
 
-        subject = "Workflow %s's job %s exceeded timeout" % (
+        subject = "Workflow {0!s}'s job {1!s} exceeded timeout".format(
             job_execution_data.workflow, job_execution_data.job)
         try:
             self._send_message(subject, to, text, html)
         except:
             # Do not fail the job if sending out warning email failed.
-            LOG.exception('failed to send warning email to %s for job %s'
-                          % (to, job_execution_data.job))
+            LOG.exception('failed to send warning email to {0!s} for job {1!s}'.format(to, job_execution_data.job))
 
     def send_too_many_running_instances_warning_message(self, to, workflow,
                                                         number_running_instances,
@@ -572,15 +571,14 @@ workflow=%(workflow)s&instance=%(instance)s&job=%(job)s">%(job)s</a>
                                                                  number_running_instances,
                                                                  max_running_instances)
 
-        subject = "Too many (%s) instances running for workflow %s !" % (
+        subject = "Too many ({0!s}) instances running for workflow {1!s} !".format(
             number_running_instances, workflow)
 
         try:
             self._send_message(subject, to, text, None)
         except:
             # Do not fail the job if sending out warning email failed.
-            LOG.exception('failed to send too many instance running warning email to %s for workflow %s'
-                          % (to, workflow))
+            LOG.exception('failed to send too many instance running warning email to {0!s} for workflow {1!s}'.format(to, workflow))
 
     def _get_workflow_params(self, workflow, number_running_instances, max_running_instances):
         return {'ui_host': self._ui_host,

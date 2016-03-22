@@ -193,27 +193,27 @@ class Name(object):
 
     def get_workflow_prefix(self):
         if self.workflow:
-            return '/workflow/%(workflow)s/' % {'workflow': self.workflow}
+            return '/workflow/{workflow!s}/'.format(**{'workflow': self.workflow})
         return ''
 
     def get_instance_prefix(self):
         if self.workflow and self.instance:
-            return ('/workflow/%(workflow)s/%(instance)s/' %
-                    {'workflow': self.workflow, 'instance': self.instance})
+            return ('/workflow/{workflow!s}/{instance!s}/'.format(**
+                    {'workflow': self.workflow, 'instance': self.instance}))
         return ''
 
     def get_job_prefix(self):
         if self.workflow and self.instance:
-            return ('/workflow/%(workflow)s/%(instance)s/job/' %
-                    {'workflow': self.workflow, 'instance': self.instance})
+            return ('/workflow/{workflow!s}/{instance!s}/job/'.format(**
+                    {'workflow': self.workflow, 'instance': self.instance}))
         return ''
 
     def get_job_state_prefix(self):
         if self.workflow and self.instance and self.job_state:
-            return ('/workflow/%(workflow)s/%(instance)s/job/%(job_state)s/' %
+            return ('/workflow/{workflow!s}/{instance!s}/job/{job_state!s}/'.format(**
                     {'workflow': self.workflow,
                      'instance': self.instance,
-                     'job_state': self.job_state})
+                     'job_state': self.job_state}))
         return ''
 
     def get_job_token_name(self):
@@ -248,28 +248,28 @@ class Name(object):
 
     def get_workflow_schedule_token_name(self):
         if self.workflow:
-            return '/schedule/workflow/%(workflow)s' % {'workflow':
-                                                        self.workflow}
+            return '/schedule/workflow/{workflow!s}'.format(**{'workflow':
+                                                        self.workflow})
 
     def get_signal_prefix(self):
         if not self.workflow:
             return '/workflow/__SIGNAL__/'
         if not self.instance:
-            return '/workflow/%(workflow)s/__SIGNAL__/' % {
-                'workflow': self.workflow}
-        return ('/workflow/%(workflow)s/%(instance)s/__SIGNAL__/' % {
+            return '/workflow/{workflow!s}/__SIGNAL__/'.format(**{
+                'workflow': self.workflow})
+        return ('/workflow/{workflow!s}/{instance!s}/__SIGNAL__/'.format(**{
                 'workflow': self.workflow,
-                'instance': self.instance})
+                'instance': self.instance}))
 
     def get_signal_token_name(self):
         if self.signal:
             if not self.workflow:
-                return '/workflow/__SIGNAL__/%(signal)s' % {
-                    'signal': self.signal}
+                return '/workflow/__SIGNAL__/{signal!s}'.format(**{
+                    'signal': self.signal})
             if not self.instance:
-                return '/workflow/%(workflow)s/__SIGNAL__/%(signal)s' % {
+                return '/workflow/{workflow!s}/__SIGNAL__/{signal!s}'.format(**{
                     'workflow': self.workflow,
-                    'signal': self.signal}
+                    'signal': self.signal})
             return ('/workflow/%(workflow)s/%(instance)s/__SIGNAL__/'
                     '%(signal)s' % {'workflow': self.workflow,
                                     'instance': self.instance,

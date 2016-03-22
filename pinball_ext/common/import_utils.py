@@ -138,8 +138,7 @@ class ModuleImport(object):
                 continue
             existing_component = self._name_to_class_map.get(clazz.__name__)
             if existing_component and existing_component != clazz:
-                raise Exception('Modules must have unique names. Duplicate: %s vs %s'
-                                % (existing_component, clazz))
+                raise Exception('Modules must have unique names. Duplicate: {0!s} vs {1!s}'.format(existing_component, clazz))
 
             self._name_to_class_map[clazz.__name__] = clazz
 

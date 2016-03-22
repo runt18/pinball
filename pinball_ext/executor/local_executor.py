@@ -49,15 +49,15 @@ class LocalExecutor(ClusterExecutor):
         jobconf_args['mapred.job.name'] = self.job_name
 
         # create arguments string
-        arguments = ' '.join('-D%s=%s' % (k, v) for k, v in jobconf_args.iteritems())
+        arguments = ' '.join('-D{0!s}={1!s}'.format(k, v) for k, v in jobconf_args.iteritems())
         arguments += ' '
         arguments += ' '.join(extra_args)
 
         libjars_glob = ' '.join(
-            ['%s/*.jar' % d for d in self.config.USER_LIBJAR_DIRS])
-        libjars = '`echo %s | tr \' \' \',\'`' % libjars_glob
+            ['{0!s}/*.jar'.format(d) for d in self.config.USER_LIBJAR_DIRS])
+        libjars = '`echo {0!s} | tr \' \' \',\'`'.format(libjars_glob)
 
-        user_jar_dirs = ['%s/*' % d for d in self.config.USER_LIBJAR_DIRS]
+        user_jar_dirs = ['{0!s}/*'.format(d) for d in self.config.USER_LIBJAR_DIRS]
         hadoop_classpath = ':'.join(user_jar_dirs)
 
         # generate command
@@ -77,9 +77,8 @@ class LocalExecutor(ClusterExecutor):
                ' %(arguments)s') % var_dict
 
         # log command message
-        self.log.info('Running class:%s with arguments:%s' %
-                      (class_name, arguments))
-        self.log.info('Full command: %s' % cmd)
+        self.log.info('Running class:{0!s} with arguments:{1!s}'.format(class_name, arguments))
+        self.log.info('Full command: {0!s}'.format(cmd))
 
         # run command
         os.system(cmd)

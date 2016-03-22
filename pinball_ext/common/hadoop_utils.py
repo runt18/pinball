@@ -60,14 +60,14 @@ class HadoopHostConfig(object):
     # Port which we can SSH to.
     SSH_PORT = 22
     # Path for the local ssh identity file.
-    SSH_KEY_FILE = '%s/.ssh/hadoop_identity' % \
-                   os.environ.get('HOME', '/home/prod')
+    SSH_KEY_FILE = '{0!s}/.ssh/hadoop_identity'.format( \
+                   os.environ.get('HOME', '/home/prod'))
     # Home path on Hadoop host.
     REMOTE_HADOOP_HOME = '/home/hadoop'
 
     def __eq__(self, other):
         if type(self) != type(other):
-            raise ValueError('comparing apples and carrots (%s)' % type(other))
+            raise ValueError('comparing apples and carrots ({0!s})'.format(type(other)))
         return (self.USER_NAME == other.USER_NAME and
                 self.HOST_NAME == other.HOST_NAME and
                 self.SSH_PORT == other.SSH_PORT and
@@ -102,7 +102,7 @@ def run_command_in_hadoop(hadoop_node_config,
 
     key_file_path = os.path.expanduser(hadoop_node_config.SSH_KEY_FILE)
     if not os.path.exists(key_file_path):
-        LOG.warn('SSH key %s does not exist.' % hadoop_node_config.SSH_KEY_FILE)
+        LOG.warn('SSH key {0!s} does not exist.'.format(hadoop_node_config.SSH_KEY_FILE))
         key_file_path = None
 
     return shell_utils.run_ssh_command(
@@ -147,7 +147,7 @@ def hdfs_exists(hadoop_node_config, file_pattern):
         hadoop_node_config - where to SSH to and run this command.
         file_pattern - string file name or glob-like pattern.
     """
-    cmd = 'hadoop fs -ls %s 2>&1 > /dev/null; echo $?' % file_pattern
+    cmd = 'hadoop fs -ls {0!s} 2>&1 > /dev/null; echo $?'.format(file_pattern)
     with run_command_in_hadoop(hadoop_node_config, cmd) as f:
         output = f.read()
     return output.strip() == '0'
@@ -170,12 +170,11 @@ def hdfs_rmr(file_pattern, safety_check=None, date_partitioned_check=False):
     DATE_PARTITION_REGEX = r'(.*\d{4}-\d{2}-\d{2}/*)'
     if date_partitioned_check:
         if not re.match(DATE_PARTITION_REGEX, file_pattern):
-            raise Exception('Attempted to delete non date partitioned dir %s'
-                            % file_pattern)
+            raise Exception('Attempted to delete non date partitioned dir {0!s}'.format(file_pattern))
 
     if safety_check:
         assert(safety_check in file_pattern)
-    cmd = 'hadoop fs -rmr %s' % file_pattern
+    cmd = 'hadoop fs -rmr {0!s}'.format(file_pattern)
     run_and_check_command_in_hadoop(cmd)
 
 

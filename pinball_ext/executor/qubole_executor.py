@@ -125,7 +125,7 @@ class QuboleExecutor(ClusterExecutor):
         full_query_string += self._get_scheduler_hive_setting()
         full_query_string += query_str
 
-        self.log.info('Running query %s' % full_query_string)
+        self.log.info('Running query {0!s}'.format(full_query_string))
 
         kwargs = dict(query=full_query_string)
         hc, output, stderr, job_ids = self._run_qubole_command_with_stderr(
@@ -172,14 +172,13 @@ class QuboleExecutor(ClusterExecutor):
         # The place where all jars are stored in s3.
         s3_jar_dirs = self.config.USER_LIBJAR_DIRS + extra_jars
         # The place where all jars will be copied to locally.
-        local_jar_dir = '/tmp/hadoop_users/%s/%s' % \
-                        (self.config.USER, utils.get_random_string())
-        download_jar_cmds = ['hadoop fs -get %s %s' % (s3_dir, local_jar_dir)
+        local_jar_dir = '/tmp/hadoop_users/{0!s}/{1!s}'.format(self.config.USER, utils.get_random_string())
+        download_jar_cmds = ['hadoop fs -get {0!s} {1!s}'.format(s3_dir, local_jar_dir)
                              for s3_dir in s3_jar_dirs]
         download_jar_cmd = ' && '.join(download_jar_cmds)
         appjar_name = s3_utils.extract_file_name_from_s3_path(
             self.config.USER_APPJAR_PATH)
-        download_jar_cmd += ' && hadoop fs -get %s %s/%s' % (
+        download_jar_cmd += ' && hadoop fs -get {0!s} {1!s}/{2!s}'.format(
             self.config.USER_APPJAR_PATH,
             local_jar_dir,
             appjar_name
@@ -193,20 +192,20 @@ class QuboleExecutor(ClusterExecutor):
         jobconf_args['mapred.job.name'] = self.job_name
 
         # Create arguments.
-        arguments = ' '.join('-D%s=%s' % (k, v) for k, v in jobconf_args.iteritems())
+        arguments = ' '.join('-D{0!s}={1!s}'.format(k, v) for k, v in jobconf_args.iteritems())
         arguments += ' '
         arguments += ' '.join(extra_args)
 
         libjars = self._get_libjars_local_paths(s3_jar_dirs, local_jar_dir)
-        hadoop_classpath = '%s/*' % local_jar_dir
+        hadoop_classpath = '{0!s}/*'.format(local_jar_dir)
 
         cmd = 'mkdir -p %(local_jar_dir)s && %(download_jar_cmd)s'
 
         files_to_be_deleted = []
         for qubole_jar in self.config.QUBOLE_JARS_BLACKLIST:
-            files_to_be_deleted.append('%s/%s' % (local_jar_dir, qubole_jar))
+            files_to_be_deleted.append('{0!s}/{1!s}'.format(local_jar_dir, qubole_jar))
         if files_to_be_deleted:
-            cmd += ' && rm -f %s' % (' && rm -f '.join(files_to_be_deleted))
+            cmd += ' && rm -f {0!s}'.format((' && rm -f '.join(files_to_be_deleted)))
 
         # Generate command.
         var_dict = {
@@ -227,7 +226,7 @@ class QuboleExecutor(ClusterExecutor):
         cmd = cmd % var_dict
 
         # Log command messages.
-        self.log.info('Full command: %s' % cmd)
+        self.log.info('Full command: {0!s}'.format(cmd))
 
         # Run command.
         hc, output, stderr, job_ids = self.run_shell_command(cmd)
@@ -272,7 +271,7 @@ class QuboleExecutor(ClusterExecutor):
         filtered_jar_names = list(set(filtered_jar_names))
 
         final_jar_paths = [
-            '%s/%s' % (local_jar_dir, jar_name)
+            '{0!s}/{1!s}'.format(local_jar_dir, jar_name)
             for jar_name in filtered_jar_names]
         return ','.join(final_jar_paths)
 
@@ -344,7 +343,7 @@ class QuboleExecutor(ClusterExecutor):
 
         # TODO(mao): set proper number for the tries param.
         hc = self._retry_wrapper(lambda: cls.create(**kwargs), tries=10)
-        sys.stderr.write("PINBALL:kill_id=%s/%s\n" % (self.config.PLATFORM,
+        sys.stderr.write("PINBALL:kill_id={0!s}/{1!s}\n".format(self.config.PLATFORM,
                                                       hc.id))
         sys.stderr.flush()
 
@@ -361,8 +360,7 @@ class QuboleExecutor(ClusterExecutor):
             try:
                 if cls.is_done(hc.status):
                     break
-                self.log.info("Sleeping for %s seconds and polling."
-                              % Qubole.poll_interval)
+                self.log.info("Sleeping for {0!s} seconds and polling.".format(Qubole.poll_interval))
                 time.sleep(Qubole.poll_interval)
                 hc = cls.find(hc.id)
 
@@ -387,11 +385,10 @@ class QuboleExecutor(ClusterExecutor):
                 retry_delay *= 2
 
         query_id = str(hc.id)
-        self.log.info('Completed Query, Id: %s, Status: %s' %
-                      (query_id, hc.status))
+        self.log.info('Completed Query, Id: {0!s}, Status: {1!s}'.format(query_id, hc.status))
 
         if hc.status == 'error' or hc.status == 'cancelled':
-            error_message = "Failed on query: %s" % query_id
+            error_message = "Failed on query: {0!s}".format(query_id)
             raise subprocess.CalledProcessError(1, error_message)
         elif hc.status == "running":
             error_message = "The job is still running, but got too many " \
@@ -401,8 +398,7 @@ class QuboleExecutor(ClusterExecutor):
         self.log.info("Now receiving the query output.")
         output = self._get_qubole_command_output(hc)
         self.log.info("Received the query output.")
-        self.log.info("Output has %d rows. First 10 rows:\n\t%s"
-                      % (len(output),
+        self.log.info("Output has {0:d} rows. First 10 rows:\n\t{1!s}".format(len(output),
                          '\n\t'.join([str(o) for o in output[:9]])))
 
         return hc, output, stderr_list, self._job_ids

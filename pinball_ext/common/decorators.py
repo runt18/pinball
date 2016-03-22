@@ -72,7 +72,7 @@ def retry(ExceptionToCheck, tries=4, delay=3, backoff=2, logger=LOG,
                         logger.warning(
                             "%s, Retrying in %d seconds...", e, mdelay)
                     else:
-                        print "%s, Retrying in %d seconds..." % (
+                        print "{0!s}, Retrying in {1:d} seconds...".format(
                             str(e), mdelay)
                     sleep_func(mdelay)
                     mtries -= 1

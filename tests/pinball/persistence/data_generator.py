@@ -51,38 +51,38 @@ def _generate_job_token(workflow, instance, job, executions, max_jobs):
     if job == 0:
         inputs = [Name.WORKFLOW_START_INPUT]
     else:
-        inputs = ['job_%d' % (job - 1)]
+        inputs = ['job_{0:d}'.format((job - 1))]
     if job == max_jobs - 1:
         outputs = []
     else:
-        outputs = ['job_%d' % (job + 1)]
-    shell_job = ShellJob(name='job_%d' % job, inputs=inputs, outputs=outputs,
-                         command='some command %d' % job)
+        outputs = ['job_{0:d}'.format((job + 1))]
+    shell_job = ShellJob(name='job_{0:d}'.format(job), inputs=inputs, outputs=outputs,
+                         command='some command {0:d}'.format(job))
     for e in range(0, executions):
         start_time = 1000000 * workflow + 10000 * instance + 100 * job + e + 1
         end_time = start_time + 10 * e + 1
         DIR = '/tmp/pinball/logs'
         if not os.path.exists(DIR):
             os.makedirs(DIR)
-        LOG_PATTERN = '%s/%%s.%%d.%%s' % DIR
+        LOG_PATTERN = '{0!s}/%s.%d.%s'.format(DIR)
         info_log_file = LOG_PATTERN % (job, start_time, 'info')
         with open(info_log_file, 'w') as f:
-            f.write('some info log of execution %d' % e)
+            f.write('some info log of execution {0:d}'.format(e))
         error_log_file = LOG_PATTERN % (job, start_time, 'error')
         with open(error_log_file, 'w') as f:
-            f.write('some error log of execution %d' % e)
+            f.write('some error log of execution {0:d}'.format(e))
         record = ExecutionRecord(
-            info='some_command %d some_args %d' % (e, e),
-            instance='instance_%d' % instance,
+            info='some_command {0:d} some_args {1:d}'.format(e, e),
+            instance='instance_{0:d}'.format(instance),
             start_time=start_time,
             end_time=end_time,
             exit_code=(workflow + instance + e) % 2,
             logs={'info': info_log_file, 'error': error_log_file})
         shell_job.history.append(record)
-    name = Name(workflow='workflow_%d' % workflow,
-                instance='instance_%d' % instance,
+    name = Name(workflow='workflow_{0:d}'.format(workflow),
+                instance='instance_{0:d}'.format(instance),
                 job_state=Name.WAITING_STATE,
-                job='job_%d' % job)
+                job='job_{0:d}'.format(job))
     return Token(name=name.get_job_token_name(),
                  version=1000000 * workflow + 10000 * instance + 100 * job,
                  priority=job,
@@ -103,7 +103,7 @@ def _generate_schedule_tokens(workflows):
     for w in range(workflows):
         next_run_time = time.time() + (365 + w) * 24 * 60 * 60
         recurrence = min(365 * 24 * 60 * 60, 60 ** w)
-        workflow = 'workflow_%d' % w
+        workflow = 'workflow_{0:d}'.format(w)
         schedule = WorkflowSchedule(next_run_time,
                                     recurrence_seconds=recurrence,
                                     overrun_policy=w % 4, workflow=workflow)
@@ -119,7 +119,7 @@ def _generate_schedule_tokens(workflows):
 def _generate_signal_tokens(workflows):
     result = []
     for w in range(0, workflows, 2):
-        workflow = 'workflow_%d' % w
+        workflow = 'workflow_{0:d}'.format(w)
         signal = Signal(Signal.DRAIN)
         name = Name(workflow=workflow,
                     signal=Signal.action_to_string(signal.action))

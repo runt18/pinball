@@ -24,6 +24,5 @@ class EmrWordCount(HadoopJob):
             # your input path
             's3://your_bucket/data/wordcount.input',
             # your output path
-            's3://your_bucket/data/%(end_date)s/wordcount.output'
-            % self.params
+            's3://your_bucket/data/{end_date!s}/wordcount.output'.format(**self.params)
         ]

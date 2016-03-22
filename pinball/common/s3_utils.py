@@ -50,7 +50,7 @@ def parse_s3_location(s3_location):
         regex = r'\s*s3n://(.+?)/(.+)'
         return re.match(regex, s3_location).groups()
     except:
-        raise Exception('Invalid s3 location: %s' % s3_location)
+        raise Exception('Invalid s3 location: {0!s}'.format(s3_location))
 
 
 def get_s3_bucket(bucket_name):

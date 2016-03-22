@@ -110,7 +110,7 @@ def _run_worker(factory, emailer):
 def _wait_for_threads(threads):
     finished_threads = 0
     total_threads = len(threads)
-    LOG.info('Waiting for %d thread(s) to finish' % total_threads)
+    LOG.info('Waiting for {0:d} thread(s) to finish'.format(total_threads))
     # We cannot simply go over the list of threads and join them one by one
     # because join() does not propagate KeyboardInterrupt.
     while threads:
@@ -123,7 +123,7 @@ def _wait_for_threads(threads):
                 found_finished = True
                 thread.join()
                 finished_threads += 1
-                LOG.info('Thread %d/%d finished' % (finished_threads,
+                LOG.info('Thread {0:d}/{1:d} finished'.format(finished_threads,
                                                     total_threads))
         threads = new_threads
         if not found_finished:
@@ -188,10 +188,10 @@ def main():
         emailer = Emailer(socket.gethostname(), PinballConfig.UI_PORT)
 
     if options.mode == 'ui':
-        hostport = '%s:%d' % (socket.gethostname(), PinballConfig.UI_PORT)
+        hostport = '{0!s}:{1:d}'.format(socket.gethostname(), PinballConfig.UI_PORT)
         cache_thread.start_cache_thread(DbStore())
         if not PinballConfig.UI_HOST:
-            hostport = 'localhost:%d' % PinballConfig.UI_PORT
+            hostport = 'localhost:{0:d}'.format(PinballConfig.UI_PORT)
 
         # Disable reloader to prevent auto refresh on file changes.  The
         # problem with auto-refresh is that it starts multiple processes.  Some

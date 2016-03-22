@@ -93,7 +93,7 @@ class Signal(TokenData):
 
     def __str__(self):
         action_str = Signal.action_to_string(self.action)
-        return 'Signal(action=%s, attributes=%s)' % (action_str,
+        return 'Signal(action={0!s}, attributes={1!s})'.format(action_str,
                                                      self.attributes)
 
     def __repr__(self):

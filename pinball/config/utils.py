@@ -155,7 +155,7 @@ def get_unique_name():
     # time.time() is.
     hostname = sanitize_name(socket.gethostname())
     thread_name = sanitize_name(threading.current_thread().name)
-    return '%s_%d_%d_%s_%d_%d_%d' % (hostname,
+    return '{0!s}_{1:d}_{2:d}_{3!s}_{4:d}_{5:d}_{6:d}'.format(hostname,
                                      PinballConfig.GENERATION,
                                      os.getpid(),
                                      thread_name,
@@ -175,7 +175,7 @@ def token_to_str(token):
     data_str = token_data_to_str(token.data)
     if token.expirationTime:
         if token.expirationTime == sys.maxint:
-            expiration = 'inf (%d)' % token.expirationTime
+            expiration = 'inf ({0:d})'.format(token.expirationTime)
         else:
             expiration = timestamp_to_str(token.expirationTime)
     else:
