@@ -42,7 +42,7 @@ class OutputFilter(object):
         key_values = self._log_line_processor(line)
         result = ''
         for key, value in key_values.items():
-            result += 'PINBALL:%s=%s\n' % (key, value)
+            result += 'PINBALL:{0!s}={1!s}\n'.format(key, value)
         return result
 
     def _write(self, line):

@@ -88,9 +88,9 @@ class Cat(Command):
         if not tokens:
             output += 'total 0\n'
         else:
-            output += 'total %d\n' % len(tokens)
+            output += 'total {0:d}\n'.format(len(tokens))
             for token in tokens:
-                output += '%s\n' % token_to_str(token)
+                output += '{0!s}\n'.format(token_to_str(token))
         return output
 
 
@@ -118,9 +118,9 @@ class Ls(Command):
         if not response.counts:
             output += 'total 0\n'
         else:
-            output += 'total %d\n' % len(response.counts)
+            output += 'total {0:d}\n'.format(len(response.counts))
             for group in sorted(response.counts.keys()):
-                output += '%s [%d token(s)]\n' % (group,
+                output += '{0!s} [{1:d} token(s)]\n'.format(group,
                                                   response.counts[group])
         return output
 
@@ -148,12 +148,12 @@ class Rm(Command):
         else:
             print 'removing:'
             for token in tokens:
-                print '\t%s' % token.name
-            if self._force or confirm('remove %d tokens' % len(tokens)):
+                print '\t{0!s}'.format(token.name)
+            if self._force or confirm('remove {0:d} tokens'.format(len(tokens))):
                 request = ModifyRequest(deletes=tokens)
                 client.modify(request)
                 deleted = len(tokens)
-        output += 'removed %d token(s)\n' % deleted
+        output += 'removed {0:d} token(s)\n'.format(deleted)
         return output
 
 
@@ -210,7 +210,7 @@ class Update(Command):
             action = 'inserted'
         else:
             action = 'updated'
-        output += '%s %s\n' % (action, str(response.updates[0]))
+        output += '{0!s} {1!s}\n'.format(action, str(response.updates[0]))
         output += 'updated 1 token\n'
         return output
 

@@ -102,7 +102,7 @@ class Scheduler(object):
             # tokens which are ready to run, clock skew between different
             # machines may result in claiming a token too soon.
             assert (self._owned_schedule_token.expirationTime >=
-                    schedule.next_run_time), ('%d < %d in token %s' % (
+                    schedule.next_run_time), ('{0:d} < {1:d} in token {2!s}'.format(
                         self._owned_schedule_token.expirationTime,
                         schedule.next_run_time,
                         token_to_str(self._owned_schedule_token)))
@@ -127,7 +127,7 @@ class Scheduler(object):
             self._owned_schedule_token.expirationTime = int(
                 time.time() + Scheduler._DELAY_TIME_SEC)
         else:
-            raise PinballException('unknown schedule policy %d in token %s' % (
+            raise PinballException('unknown schedule policy {0:d} in token {1!s}'.format(
                 schedule.overrun_policy, self._owned_schedule_token))
 
     def _update_tokens(self):

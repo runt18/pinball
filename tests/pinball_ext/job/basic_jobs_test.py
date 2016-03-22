@@ -26,8 +26,8 @@ __version__ = '2.0'
 
 class PythonTestJob(basic_jobs.PythonJob):
     def _execute(self):
-        out_stdout = "%s/%s" % ('output', 'stdout')
-        out_stderr = "%s/%s" % ('output', 'stderr')
+        out_stdout = "{0!s}/{1!s}".format('output', 'stdout')
+        out_stderr = "{0!s}/{1!s}".format('output', 'stderr')
         self._job_output = out_stdout
         self._job_stderr = out_stderr
         return

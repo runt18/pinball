@@ -154,7 +154,7 @@ class ShellJob(Job):
         return self.__str__()
 
     def info(self):
-        return 'command=%s' % self.command
+        return 'command={0!s}'.format(self.command)
 
     def reload(self, new_job):
         super(ShellJob, self).reload(new_job)
@@ -208,7 +208,7 @@ class ShellJob(Job):
             for key, value in event.attributes.items():
                 new_value = result.get(key)
                 if new_value:
-                    new_value += ',%s' % value
+                    new_value += ',{0!s}'.format(value)
                 else:
                     new_value = value
                 result[key] = new_value

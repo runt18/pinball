@@ -535,7 +535,7 @@ class DataBuilder(object):
         # TODO(pawel): extend the Name module to support abstractions needed
         # here.
         name_infix = '/job/'
-        name_suffix = '/%s' % job
+        name_suffix = '/{0!s}'.format(job)
         job_tokens = self._store.read_tokens(name_prefix=name_prefix,
                                              name_infix=name_infix,
                                              name_suffix=name_suffix)
@@ -562,7 +562,7 @@ class DataBuilder(object):
         for prefix in instances_prefixes:
             name = Name.from_instance_prefix(prefix)
             assert name.workflow and name.instance, (
-                'Expected instance prefix, found %s' % prefix)
+                'Expected instance prefix, found {0!s}'.format(prefix))
             instances.append(self.get_instance(name.workflow, name.instance))
         return self._workflows_data_from_instances_data(instances)
 
@@ -615,7 +615,7 @@ class DataBuilder(object):
         for prefix in instances_prefixes:
             name = Name.from_instance_prefix(prefix)
             assert name.workflow and name.instance, (
-                'Expected instance prefix, found %s' % prefix)
+                'Expected instance prefix, found {0!s}'.format(prefix))
             result.append(self.get_instance(name.workflow, name.instance))
         return result
 
@@ -921,7 +921,7 @@ class DataBuilder(object):
             List of direct path descendants of the parent.
         """
         if not path.startswith(Name.DELIMITER):
-            raise PinballException('incorrectly formatted path %s' % path)
+            raise PinballException('incorrectly formatted path {0!s}'.format(path))
         # TODO(pawel): this is a bit inefficient as it may load names of quite
         # a few tokens into the memory.
         token_names = self._store.read_token_names(name_prefix=path)
@@ -954,8 +954,8 @@ class DataBuilder(object):
             if token.name == name:
                 break
         if not token or token.name != name:
-            raise PinballException("didn't find any tokens with name %s" %
-                                   name)
+            raise PinballException("didn't find any tokens with name {0!s}".format(
+                                   name))
         return TokenData(name=token.name,
                          version=token.version,
                          owner=token.owner,

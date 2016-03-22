@@ -45,22 +45,22 @@ class Path(object):
 
     def get_workflow_prefix(self):
         if self.workflow:
-            return '/workflow/%(workflow)s/' % {'workflow': self.workflow}
+            return '/workflow/{workflow!s}/'.format(**{'workflow': self.workflow})
         return ''
 
     def get_job_prefix(self):
         if self.workflow:
-            return '/workflow/%(workflow)s/job/' % {'workflow': self.workflow}
+            return '/workflow/{workflow!s}/job/'.format(**{'workflow': self.workflow})
         return ''
 
     def get_schedule_path(self):
         if self.workflow:
-            return ('/workflow/%(workflow)s/schedule' %
-                    {'workflow': self.workflow})
+            return ('/workflow/{workflow!s}/schedule'.format(**
+                    {'workflow': self.workflow}))
         return ''
 
     def get_job_path(self):
         if self.workflow and self.job:
-            return ('/workflow/%(workflow)s/job/%(job)s' %
-                    {'workflow': self.workflow, 'job': self.job})
+            return ('/workflow/{workflow!s}/job/{job!s}'.format(**
+                    {'workflow': self.workflow, 'job': self.job}))
         return ''

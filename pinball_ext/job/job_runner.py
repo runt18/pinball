@@ -62,7 +62,7 @@ def _acquire_exclusive_lock(write_lock_name):
     Underneath we create a lock file and return a descriptor of that file. The
     lock will be held as long as this file descriptor is open.
     """
-    lock_filename = '/var/lock/%s.lock' % write_lock_name
+    lock_filename = '/var/lock/{0!s}.lock'.format(write_lock_name)
     LOG.info('Acquiring lock %s ...', lock_filename)
 
     lock_file = open(lock_filename, 'w')
@@ -85,7 +85,7 @@ def _get_job_import_dirs(job_import_dirs_config):
     """
     if "." in job_import_dirs_config:
         module_name = '.'.join(job_import_dirs_config.split('.')[:-1])
-        exec('import %s' % module_name)
+        exec('import {0!s}'.format(module_name))
     return eval(job_import_dirs_config)
 
 
@@ -149,7 +149,7 @@ def main():
         LOG.error('job_class_name:%s not found, it should be one of:%s',
                   job_class_name,
                   all_class_names)
-        raise Exception('Python class with name: %s not found' % job_class_name)
+        raise Exception('Python class with name: {0!s} not found'.format(job_class_name))
 
     # Executor related settings.
     settings = {}

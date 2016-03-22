@@ -174,7 +174,7 @@ class ShellJobExecutor(JobExecutor):
         """
         # TODO(pawel): the file name should contain more context, in particular
         # the workflow and instance names.
-        filename = '%s.%d.%s' % (self.job.name, timestamp, log_type)
+        filename = '{0!s}.{1:d}.{2!s}'.format(self.job.name, timestamp, log_type)
         log_directory = PinballConfig.S3_LOGS_DIR \
             if PinballConfig.S3_LOGS_DIR else PinballConfig.LOCAL_LOGS_DIR
         return os.path.join(self._get_logs_dir(log_directory), filename)
@@ -324,7 +324,7 @@ class ShellJobExecutor(JobExecutor):
         return ready_to_read != []
 
     def _write_separator_to_logs(self, flag):
-        msg = '\n<<<<<<<<<<%s of cleanup code logs>>>>>>>>>>\n' % flag
+        msg = '\n<<<<<<<<<<{0!s} of cleanup code logs>>>>>>>>>>\n'.format(flag)
         for log_type in ['stdout', 'stderr']:
             if log_type in self._log_savers:
                 self._log_savers[log_type].write(msg)

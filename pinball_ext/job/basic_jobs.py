@@ -148,9 +148,9 @@ class JobBase(object):
         pass
 
     def _complete(self):
-        LOG.info('Maximum Resident set was %d MB' % (
-            resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
-        LOG.info('Successfully ran %s' % self.job_name)
+        LOG.info('Maximum Resident set was {0:d} MB'.format((
+            resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)))
+        LOG.info('Successfully ran {0!s}'.format(self.job_name))
 
     def _cleanup(self):
         pass
@@ -175,7 +175,7 @@ class JobBase(object):
         if directory[-1] != '/':
             directory += '/'
         proc = subprocess.Popen(
-            'rm -rf %s' % directory,
+            'rm -rf {0!s}'.format(directory),
             shell=True, stdout=subprocess.PIPE)
         assert proc.communicate()[0] is ''
 
@@ -188,7 +188,7 @@ class JobBase(object):
         pass
 
     def __str__(self):
-        return '(%s): (%s)' % (self.job_name, self.params)
+        return '({0!s}): ({1!s})'.format(self.job_name, self.params)
 
 
 class PythonJob(JobBase):
@@ -213,18 +213,18 @@ class CommandLineJob(JobBase):
     def _setup(self):
         self.arguments = ''
         for k, v in self.params.iteritems():
-            self.arguments += '--%s=%s ' % (k, v)
+            self.arguments += '--{0!s}={1!s} '.format(k, v)
 
     def _execute(self):
-        command = '%s %s' % (self._get_command(), self.arguments)
-        LOG.info('Running command: %s' % command)
+        command = '{0!s} {1!s}'.format(self._get_command(), self.arguments)
+        LOG.info('Running command: {0!s}'.format(command))
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
 
         # Get command process stdout.
         self._job_output = proc.communicate()[0]
         proc.wait()
         if proc.returncode != 0:
-            raise Exception('Command %s failed' % command)
+            raise Exception('Command {0!s} failed'.format(command))
 
     def _get_command(self):
         raise Exception('This job does not have a command associated with it')

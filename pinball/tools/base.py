@@ -62,7 +62,7 @@ def confirm(prompt='Confirm'):
     Returns:
         True iff the user approved the action.
     """
-    prompt = '%s [%s]|%s: ' % (prompt, 'n', 'y')
+    prompt = '{0!s} [{1!s}]|{2!s}: '.format(prompt, 'n', 'y')
 
     while True:
         ans = raw_input(prompt)

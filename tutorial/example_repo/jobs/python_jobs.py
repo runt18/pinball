@@ -23,7 +23,7 @@ class ExamplePythonJob(PythonJob):
         print 'Do some setup in example python job!'
 
     def _execute(self):
-        print 'Current time is %s' % str(datetime.datetime.now())
+        print 'Current time is {0!s}'.format(str(datetime.datetime.now()))
 
 
 class ExamplePinballMagicPythonJob(PythonJob):

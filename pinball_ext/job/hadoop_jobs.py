@@ -52,7 +52,7 @@ class HadoopJob(ClusterJob):
         raise NotImplementedError('No class name specified for this Hadoop Job')
 
     def _execute(self):
-        param_args = ['-%s %s' % (k, v) for k, v in self.params.iteritems()]
+        param_args = ['-{0!s} {1!s}'.format(k, v) for k, v in self.params.iteritems()]
 
         self._job_output, self._job_stderr, self._job_ids = \
             self.executor.run_hadoop_job(
@@ -66,6 +66,6 @@ class HadoopJob(ClusterJob):
             LOG.info('\t'.join(line))
 
     def __str__(self):
-        return '(%s): (%s) - (%s)' % (self.job_name,
+        return '({0!s}): ({1!s}) - ({2!s})'.format(self.job_name,
                                       self.params,
                                       self.jobconf_args)

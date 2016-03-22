@@ -235,7 +235,7 @@ class Processor(Iface, TProcessor):
     if name not in self._processMap:
       iprot.skip(TType.STRUCT)
       iprot.readMessageEnd()
-      x = TApplicationException(TApplicationException.UNKNOWN_METHOD, 'Unknown function %s' % (name))
+      x = TApplicationException(TApplicationException.UNKNOWN_METHOD, 'Unknown function {0!s}'.format((name)))
       oprot.writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
       x.write(oprot)
       oprot.writeMessageEnd()
@@ -369,9 +369,9 @@ class archive_args:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -430,9 +430,9 @@ class archive_result:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -491,9 +491,9 @@ class group_args:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -564,9 +564,9 @@ class group_result:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -625,9 +625,9 @@ class modify_args:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -698,9 +698,9 @@ class modify_result:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -759,9 +759,9 @@ class query_args:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -832,9 +832,9 @@ class query_result:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -893,9 +893,9 @@ class query_and_own_args:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
@@ -966,9 +966,9 @@ class query_and_own_result:
 
 
   def __repr__(self):
-    L = ['%s=%r' % (key, value)
+    L = ['{0!s}={1!r}'.format(key, value)
       for key, value in self.__dict__.iteritems()]
-    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+    return '{0!s}({1!s})'.format(self.__class__.__name__, ', '.join(L))
 
   def __eq__(self, other):
     return isinstance(other, self.__class__) and self.__dict__ == other.__dict__

@@ -53,17 +53,17 @@ class TransactionTestCase(unittest.TestCase):
                                          MasterHandler._MASTER_OWNER)
         for i in range(0, 10):
             some_token = Token(blessed_version.advance_version(),
-                               '/some_dir/some_token_%d' % i,
+                               '/some_dir/some_token_{0:d}'.format(i),
                                priority=i,
-                               data='some_data_%d' % i)
+                               data='some_data_{0:d}'.format(i))
             self._trie[some_token.name] = some_token
             self._store.commit_tokens(updates=[some_token])
             for j in range(0, 10):
                 some_other_token = Token(
                     blessed_version.advance_version(),
-                    '/some_dir/some_token_%d/some_other_token_%d' % (i, j),
+                    '/some_dir/some_token_{0:d}/some_other_token_{1:d}'.format(i, j),
                     priority=j,
-                    data='some_data_%d_%d' % (i, j))
+                    data='some_data_{0:d}_{1:d}'.format(i, j))
                 self._trie[some_other_token.name] = some_other_token
                 self._store.commit_tokens(updates=[some_other_token])
         blessed_version.advance_version()
@@ -134,7 +134,7 @@ class TransactionTestCase(unittest.TestCase):
 
         expected_groups = set()
         for i in range(0, 10):
-            expected_groups.add('/some_dir/some_token_%d' % i)
+            expected_groups.add('/some_dir/some_token_{0:d}'.format(i))
         groups = set()
         for group, count in response.counts.iteritems():
             groups.add(group)

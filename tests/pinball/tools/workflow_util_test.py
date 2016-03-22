@@ -100,8 +100,8 @@ class StartTestCase(unittest.TestCase):
         client = mock.Mock()
         output = command.execute(client, None)
 
-        self.assertEqual('workflow does_not_exist not found in %s\n' %
-                         str(PinballConfig.PARSER_PARAMS), output)
+        self.assertEqual('workflow does_not_exist not found in {0!s}\n'.format(
+                         str(PinballConfig.PARSER_PARAMS)), output)
 
     @mock.patch('pinball.parser.utils.load_path')
     @mock.patch('pinball.tools.workflow_util._check_workflow_instances')
@@ -1072,8 +1072,8 @@ class ReloadTestCase(unittest.TestCase):
         client = mock.Mock()
         output = command.execute(client, None)
 
-        self.assertEqual('workflow does_not_exist not found in %s\n' %
-                         str(PinballConfig.PARSER_PARAMS), output)
+        self.assertEqual('workflow does_not_exist not found in {0!s}\n'.format(
+                         str(PinballConfig.PARSER_PARAMS)), output)
 
     @mock.patch('pinball.tools.workflow_util.time')
     @mock.patch('pinball.parser.utils.load_path')
@@ -1437,7 +1437,7 @@ class CleanupTestCase(unittest.TestCase):
             elif args[0] == new_workflow.workflow:
                 return [new_instance]
             else:
-                assert False, 'unknown workflow %s' % args[0]
+                assert False, 'unknown workflow {0!s}'.format(args[0])
         builder.get_instances.side_effect = side_effect
 
         store = mock.Mock()

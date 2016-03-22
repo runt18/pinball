@@ -88,8 +88,7 @@ class Config(object):
         """
         for attribute in self._REQUIRED_ATTRIBUTES:
             if not hasattr(self, attribute):
-                raise PinballException('attribute %s not found in config %s' %
-                                       (attribute, self))
+                raise PinballException('attribute {0!s} not found in config {1!s}'.format(attribute, self))
         return copy.copy(self.__dict__)
 
     def _validate(self):

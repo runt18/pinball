@@ -72,7 +72,7 @@ class FakeRepository(Repository):
             return _SCHEDULE_TEMPLATE % "1d"
         elif path == '/workflow/some_workflow/job/some_job':
             return _JOB_TEMPLATE % 10
-        assert False, 'unrecognized path %s' % path
+        assert False, 'unrecognized path {0!s}'.format(path)
 
     def _put_config(self, path, content):
         self.configs[path] = content
@@ -91,7 +91,7 @@ class FakeRepository(Repository):
             return ['some_job']
         elif directory == '/workflow/some_other_workflow/job/':
             return ['some_other_job', 'yet_another_job']
-        assert False, 'unrecognized directory %s' % directory
+        assert False, 'unrecognized directory {0!s}'.format(directory)
 
 
 class RepositoryTestCase(unittest.TestCase):

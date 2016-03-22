@@ -52,9 +52,9 @@ class GithubRepository(Repository):
         conn = httplib.HTTPSConnection(PinballConfig.GITHUB_SERVER,
                                        timeout=PinballConfig.GITHUB_HTTP_TIMEOUT_SEC)
         location = urlparse.urljoin(PinballConfig.GITHUB_API_URI, location)
-        authorization = base64.b64encode('%s:x-oauth-basic' %
-                                         PinballConfig.GITHUB_OAUTH_TOKEN)
-        headers = {'Authorization': 'Basic %s' % authorization}
+        authorization = base64.b64encode('{0!s}:x-oauth-basic'.format(
+                                         PinballConfig.GITHUB_OAUTH_TOKEN))
+        headers = {'Authorization': 'Basic {0!s}'.format(authorization)}
         conn.request(method, location, body, headers)
         response = conn.getresponse()
         if response.status not in expected_status:
@@ -66,7 +66,7 @@ class GithubRepository(Repository):
         return response.read()
 
     def _get_config(self, path):
-        location = 'repos/%s/configs/contents%s' % (PinballConfig.USER, path)
+        location = 'repos/{0!s}/configs/contents{1!s}'.format(PinballConfig.USER, path)
         response = self._make_request('GET', location, None, [httplib.OK])
         response_json = json.loads(response)
         encoded_content = response_json['content']
@@ -86,7 +86,7 @@ class GithubRepository(Repository):
         return response.get('type')
 
     def _put_config(self, path, content):
-        location = 'repos/%s/configs/contents%s' % (PinballConfig.USER, path)
+        location = 'repos/{0!s}/configs/contents{1!s}'.format(PinballConfig.USER, path)
         encoded_contnet = base64.b64encode(content)
         body = {'message': 'updating config',
                 'committer': {'name': GithubRepository._COMMITTER_NAME,
@@ -101,8 +101,7 @@ class GithubRepository(Repository):
         if file_type:
             # Path exists.
             if file_type != 'file':
-                raise PinballException('path %s is not a file but a %s' %
-                                       (path, file_type))
+                raise PinballException('path {0!s} is not a file but a {1!s}'.format(path, file_type))
             body['sha'] = response_json['sha']
 
         # Work around a bug in Github.  See
@@ -115,7 +114,7 @@ class GithubRepository(Repository):
                            [httplib.CREATED, httplib.OK])
 
     def _delete_config(self, path):
-        location = 'repos/%s/configs/contents%s' % (PinballConfig.USER, path)
+        location = 'repos/{0!s}/configs/contents{1!s}'.format(PinballConfig.USER, path)
         body = {'message': 'updating config',
                 'committer': {'name': GithubRepository._COMMITTER_NAME,
                               'email': GithubRepository._COMMITTER_EMAIL}}
@@ -125,8 +124,7 @@ class GithubRepository(Repository):
         response_json = json.loads(response)
         file_type = GithubRepository._get_file_type(response_json)
         if not file_type or file_type != 'file':
-            raise PinballException('path %s is not a file but a %s' %
-                                   (path, file_type))
+            raise PinballException('path {0!s} is not a file but a {1!s}'.format(path, file_type))
         body['sha'] = response_json['sha']
 
         # Create or update the file.
@@ -134,7 +132,7 @@ class GithubRepository(Repository):
                            [httplib.CREATED, httplib.OK])
 
     def _list_directory(self, directory, allow_not_found):
-        location = 'repos/%s/configs/contents%s' % (PinballConfig.USER, directory)
+        location = 'repos/{0!s}/configs/contents{1!s}'.format(PinballConfig.USER, directory)
         # Remove the trailing slash.
         assert directory[-1] == '/'
         location = location[:-1]
@@ -150,8 +148,7 @@ class GithubRepository(Repository):
             assert allow_not_found
             return []
         if file_type != 'dir':
-            raise PinballException('path %s is not a dir but a %s' %
-                                   (directory, file_type))
+            raise PinballException('path {0!s} is not a dir but a {1!s}'.format(directory, file_type))
         assert type(response) == list
         result = []
         for entry in response:
@@ -159,7 +156,7 @@ class GithubRepository(Repository):
             if file_type == 'file':
                 result.append(entry['name'])
             elif file_type == 'dir':
-                result.append('%s/' % entry['name'])
+                result.append('{0!s}/'.format(entry['name']))
             else:
                 raise PinballException('found content %s of unsupported type '
                                        '%s' % (entry['path'], file_type))

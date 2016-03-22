@@ -54,4 +54,4 @@ class OverrunPolicy(object):
         for policy, name in OverrunPolicy._POLICY_NAMES.items():
             if name[0] == policy_name:
                 return policy
-        raise PinballException('Unknown policy %s' % policy_name)
+        raise PinballException('Unknown policy {0!s}'.format(policy_name))

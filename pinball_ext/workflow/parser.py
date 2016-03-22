@@ -228,8 +228,7 @@ class WorkflowDef(object):
         self.jobs = {}
 
     def __str__(self):
-        return ('workflow:%s, schedule:%s, notify_emails:%s, jobs:%s' %
-                (self.name, self.schedule, self.notify_emails, str(self.jobs)))
+        return ('workflow:{0!s}, schedule:{1!s}, notify_emails:{2!s}, jobs:{3!s}'.format(self.name, self.schedule, self.notify_emails, str(self.jobs)))
 
     def __repr__(self):
         return self.__str__()
@@ -238,7 +237,7 @@ class WorkflowDef(object):
         """Add a job to the workflow."""
         if job.name in self.jobs:
             raise WorkflowVerificationException(
-                "job %s already exists in workflow %s" % (job.name, self.name))
+                "job {0!s} already exists in workflow {1!s}".format(job.name, self.name))
         self.jobs[job.name] = job
 
     def get_leaf_jobs(self):
@@ -281,7 +280,7 @@ class WorkflowDef(object):
             visited.add(job)
             if job in path:
                 raise WorkflowVerificationException(
-                    "job %s is part of a cycle" % job.get_qualified_name())
+                    "job {0!s} is part of a cycle".format(job.get_qualified_name()))
             path.append(job)
             if job.workflow.name == self.name:
                 # Do not traverse deps of jobs that belong to a different
@@ -361,7 +360,7 @@ class JobDef(object):
     def __str__(self):
         deps_str = ','.join(dep.get_qualified_name() for dep in self.inputs)
 
-        return ('job:%s, deps:[%s]' % (self.get_qualified_name(), deps_str))
+        return ('job:{0!s}, deps:[{1!s}]'.format(self.get_qualified_name(), deps_str))
 
     def __repr__(self):
         return self.__str__()
